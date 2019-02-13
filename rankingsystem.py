@@ -94,7 +94,7 @@ def check_if_player_exists(nick):
 	    s.say('player.name +" " +player.score')
 		
 def add_player(player):
-	list_of_players.append(player)
+	player_list.append(player)
 		
 def init_player(name, score):
     player = Player(name, score)
