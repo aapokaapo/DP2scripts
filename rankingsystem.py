@@ -18,8 +18,6 @@ from dplib.server import Server
 import numpy as np
 
 s = Server(hostname='178.157.90.120', port=11111, logfile=r'/home/paintball/paintball2/pball/qconsole11111.log', rcon_password='endless')
-
-
 		   
 #@s.event
 #def on_chat(nick, message):
@@ -59,19 +57,24 @@ s = Server(hostname='178.157.90.120', port=11111, logfile=r'/home/paintball/pain
 #		    define rankings nick1, nick2, nick3
 #		        s.say('Current Rankings: #1{}, #2{}, #3{}'.format(nick1, nick2, nick3))
 #    close ranking_list
-	
+
 @s.event
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
+    print('Elimination. Killer\'s nick: {0}, Killer\'s weapon: {1}, Victim\'s nick: {2}, Victim\'s weapon: {3}'
+        .format(
+        killer_nick, killer_weapon, victim_nick, victim_weapon
+    ))
     while i < len(player_list):
         if killer_nick in player_list[i].player.name:
 	        player.add_score(1)
 
 @s.event
 def on_entrance(nick, build, addr):
-	check_if_player_exists (nick)
+    print('Entrance. Nick: {0}, Build: {1}, Address: {2}'.format(nick, build, addr))
+    check_if_player_exists (nick)
 	
 #TEST
-list_of_players = []
+player_list = []
 top_three = [('player1', 0), ('player2', 0), ('player3', 0), ]
 
 def get_top_three():
@@ -87,12 +90,15 @@ def get_top_three():
            top_three[2] = [player.name, player.score]
 
 def check_if_player_exists(nick):
-    if nick in player_list.player.name:
-	    s.say('player.name + " " +player.score')
-    else:
-	    add_player(player)
-	    s.say('player.name +" " +player.score')
-		
+    while i < len(player_list):
+        if nick in player_list[i].player.name:
+            print('Player: " + player + "already in list.')
+            s.say('player.name + " " +player.score')
+            return
+
+    print('Player: " + player + "added to list.')
+    add_player(player)
+    s.say('player.name +" " +player.score')
 def add_player(player):
 	player_list.append(player)
 		
