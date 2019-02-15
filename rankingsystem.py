@@ -14,106 +14,83 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from operator import attrgetter
 from dplib.server import Server
 import numpy as np
 
-s = Server(hostname='178.157.90.120', port=11111, logfile=r'/home/paintball/paintball2/pball/qconsole11111.log', rcon_password='endless')
-		   
-#@s.event
-#def on_chat(nick, message):
-#    if message == '!rank':
-#        open ranking_list file
-#		    read ranking_list for top3_weekly
-#	        read ranking_list for nick
-#		        if nick exists
-#			        add point to nick
-#			    else
-#			        do nothing
+s = Server(hostname='178.157.90.120', port=33333, logfile=r'/home/paintball/paintball2/pball/qconsole33333.log', rcon_password='endless')
 
-#@s.event		
-#def on_chat(nick, message):
-#    if message == '!Overall':
-#        open ranking_list file
-#		    read ranking_list for top3_overall
-#	        read ranking_list for nick
-#		        if nick exists
-#			        add point to nick
-#			    else
-#			        do nothing
+@s.event
+def on_game_end(score_blue, score_red, score_yellow, score_purple):
+    print('Game ended. Blue:{} Red:{} Yellow:{} Purple:{}'.format(
+        score_blue, score_red, score_yellow, score_purple
+    ))
+	get_topthree
+    s.say('Top3/Week: #1{0}, #2{1}, #3{2}'.format(top1, top2, top3)) 
+@s.event
+def on_chat(nick, message):
+    if message == '!rank':
+	    for Player in player_object_list:
+		    if nick == Player.name:
+			    print('Player ' + nick + ' requested list.')
+			    print(str(player_object_list))
 
-#@s.event
-#def on_flag_captured(team, nick, flag):
-#    open ranking_list file
-#	    read ranking_list for nick
-#		    if nick exists
-#			   add point to nick
-#			else
-#			    do nothing
+			    s.say('{0}: {1}'.format(Player.name, Player.score))
 
-#@s.event
-#def on_mapchange(mapname):
-#    open ranking_list
-#	    seek for most points #1 #2 #3
-#		    define rankings nick1, nick2, nick3
-#		        s.say('Current Rankings: #1{}, #2{}, #3{}'.format(nick1, nick2, nick3))
-#    close ranking_list
+@s.event
+def on_flag_captured(team, nick, flag):
+    print('Flag captured. Team: {0}, Nick: {1}, Flag: {2}'.format(team, nick, flag))
+    for Player in player_object_list:
+	    if nick == Player.name:
+		    add_score(1)
+		    print('Player ' + nick + ' got point!')		    
+		    break
 
 @s.event
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
-    print('Elimination. Killer\'s nick: {0}, Killer\'s weapon: {1}, Victim\'s nick: {2}, Victim\'s weapon: {3}'
-        .format(
-        killer_nick, killer_weapon, victim_nick, victim_weapon
-    ))
-    while i < len(player_list):
-        if killer_nick in player_list[i].player.name:
-	        player.add_score(1)
-
+    for Player in player_object_list:
+	    if killer_nick == Player.name:
+		    Player.add_score(1)
+		    break
+		    print('Player ' +killer_nick + ' got point!')
 @s.event
 def on_entrance(nick, build, addr):
     print('Entrance. Nick: {0}, Build: {1}, Address: {2}'.format(nick, build, addr))
-    check_if_player_exists (nick)
+    check_if_player_exists(nick)
 	
-#TEST
-player_list = []
-top_three = [('player1', 0), ('player2', 0), ('player3', 0), ]
-
-def get_top_three():
-    while i < len(player_list):
-       if  player_list[i].player.score > top_three[0]:
-           del top_three[0]
-           top_three[0] = [player.name, player.score]
-       if  player_list[i].player.score > top_three[1]:
-           del top_three[1]
-           top_three[1] = [player.name, player.score]
-       if  player_list[i].player.score > top_three[2]:
-           del top_three[2]
-           top_three[2] = [player.name, player.score]
+player_object_list = []
 
 def check_if_player_exists(nick):
-    while i < len(player_list):
-        if nick in player_list[i].player.name:
-            print('Player: " + player + "already in list.')
-            s.say('player.name + " " +player.score')
-            return
+    print(nick)
+    print(str(player_object_list))
+    for Player in player_object_list:
+	    if nick == Player.name:
+		    print('Player ' + nick + ' already on list.')
+		    print(str(player_object_list))
 
-    print('Player: " + player + "added to list.')
-    add_player(player)
-    s.say('player.name +" " +player.score')
-def add_player(player):
-	player_list.append(player)
-		
-def init_player(name, score):
-    player = Player(name, score)
-    
+		    s.say('{0}: {1}'.format(Player.name, Player.score))
+		    break
+    else:
+	    add_player(nick)
+	    print('Player ' +  nick + ' added to list.')
+	    print(str(player_object_list))
+#def add_player toimii
+def add_player(nick):
+    player_object_list.append(Player(nick, 0))
+
+
 class Player():
     name = ""
     score = ""
 	
-    def init(self, name, score):
+    def __init__(self, name, score):
 	    self.name = name
 	    self.score = score
 		
-    def add_score(new_score):
-	    score = score + new_score
+def add_score(new_score):
+    Player.score = Player.score + new_score
+	    
+def get_topthree(top1, top2, top3):
+    
 
 s.run()
