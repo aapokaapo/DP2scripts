@@ -93,14 +93,14 @@ list = [PlayerStats('DPBot01', 'bot')]
 def get_rank(nick):
     print('Player ' + nick + ' requested scoreboard')
     for i in range(len(list)):
-        player_stats = list[i]
-        if player_stats.name == nick:
-            s.say("{}: K{}/D{}/C{}/G{}/S{}".format(player_stats.name,
-                                                   player_stats.kills,
-                                                   player_stats.deaths,
-                                                   player_stats.caps,
-                                                   player_stats.grabs,
-                                                   player_stats.score))
+        playerstats = list[i]
+        if playerstats.name == nick:
+            s.say("{}: K{}/D{}/C{}/G{}/S{}".format(playerstats.name,
+                                                   playerstats.kills,
+                                                   playerstats.deaths,
+                                                   playerstats.caps,
+                                                   playerstats.grabs,
+                                                   playerstats.score))
             break
         else:
             s.say("{0} not logged in".format(nick))
@@ -109,9 +109,9 @@ def get_rank(nick):
 
 def get_pgprank(nick):
     print('Player ' + nick + ' requested PGP-scores')
-    for player_stats in list:
-        if nick == player_stats.name:
-            s.say("{}: PGP:{}".format(player_stats.name, player_stats.pgp))
+    for playerstats in list:
+        if nick == playerstats.name:
+            s.say("{}: PGP:{}".format(playerstats.name, playerstats.pgp))
             break
         else:
             s.say("{0} not logged in".format(nick))
@@ -121,9 +121,9 @@ def get_top10():
     list.sort(reverse=True, key=lambda player_stats: player_stats.score)
     try:
         for i in range(10):
-            player_stats = list[i]
+            playerstats = list[i]
             s.say("#{}:{}: Score:{}".format(
-                i, player_stats.name, player_stats.score))
+                i, playerstats.name, playerstats.score))
     except IndexError:
         print("Less than 10 players on list")
 
@@ -132,9 +132,9 @@ def get_pgptop10():
     list.sort(reverse=True, key=lambda player_stats: player_stats.pgp)
     try:
         for i in range(10):
-            player_stats = list[i]
+            playerstats = list[i]
             s.say("#{}:{}: Score:{}".format(
-                i, player_stats.name, player_stats.score))
+                i, playerstats.name, playerstats.score))
     except IndexError:
         print("Less than 10 players on list")
 
@@ -151,15 +151,15 @@ def add_player(nick):
             break
     player_found = False
     for i in range(len(list)):
-        player_stats = list[i]
+        playerstats = list[i]
         print("Comparing dplogin id to player_stats.id")
-        print("List:#{}:{}:{}".format(i, player_stats.name, player_stats.id))
+        print("List:#{}:{}:{}".format(i, playerstats.name, playerstats.id))
         print("Trying to add:{}:{}".format(
             entered_player.nick, entered_player.dplogin))
-        if player_stats.id == entered_player.dplogin:
+        if playerstats.id == entered_player.dplogin:
             print("Player {}:{} found from list!".format(
                 nick, entered_player.dplogin))
-            player_stats.name = nick
+            playerstats.name = nick
         player_found = True
         if not player_found:
             list.append(PlayerStats(nick, entered_player.dplogin))
@@ -188,9 +188,9 @@ def on_chat(nick, message):
 
 @s.event
 def on_flag_captured(team, nick, flag):
-    for player_stats in list:
-        if nick == player_stats.name:
-            player_stats.add_capture()
+    for playerstats in list:
+        if nick == playerstats.name:
+            playerstats.add_capture()
             break
 
 
@@ -198,12 +198,12 @@ def on_flag_captured(team, nick, flag):
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
     print("eliminated")
     for player_stats in list:
-        if killer_nick == player_stats.name:
-            player_stats.add_kill()
+        if killer_nick == playerstats.name:
+            playerstats.add_kill()
         if killer_weapon == 'PGP':
-            player_stats.add_pgp(killer_nick)
-        if victim_nick == player_stats.name:
-            player_stats.add_death()
+            playerstats.add_pgp(killer_nick)
+        if victim_nick == playerstats.name:
+            playerstats.add_death()
 
 
 s.run()
