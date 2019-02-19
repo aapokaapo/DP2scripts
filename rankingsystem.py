@@ -13,83 +13,120 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#Ranking system
 
 from dplib.server import Server
-import numpy as np
 
-s = Server(hostname='178.157.90.120', port=33333, logfile=r'/home/paintball/paintball2/pball/qconsole33333.log', rcon_password='endless')
+s = Server(hostname='178.157.90.120', port=44444, logfile=r'/home/paintball/paintball2/pball/qconsole44444.log', rcon_password='endless')
+
+list = []
+
+
+class Scoreboard():
+    
+    def __init__(self, name, id, kills=0, deaths=0, caps=0, pgp=0, score=0):
+        self.name = name
+        self.id = id
+        self.kills = kills
+        self.deaths = deaths
+        self.caps = caps
+        self.pgp = pgp
+        self.score = score
+    
+    def add_kill(self, kills=1, score=1):
+        print ('Player ' + self.name + ' got a point')
+        self.kills += kills
+        self.score += score
+        
+    def add_capture(self, caps=1, score=5):
+        print ('Player ' + self.name + ' got 5 points')
+        self.caps += caps
+        self.score += score
+
+    def add_death(self, deaths=1, score=1):
+        print ('Player ' + self.name + ' lost a point')
+        self.deaths += deaths
+        self.score -= score
+        
+@s.event
+def on_chat(nick, message)
+    if message == '!addplayer':
+        players = s.get_players()
+        for player in player:
+            if player.nick == nick
+                entered_player = player:
+                break
+        player_found = False
+        for scoreboard in list:
+            if entered_player.dplogin == scoreboard id:
+                player_found = True
+                scoreboard.name = nick
+                print("Player " + nick + " found from list!")
+            if not player_found:
+                list.append(Scoreboard(nick, entered_player.dplogin))
 
 @s.event
-def on_game_end(score_blue, score_red, score_yellow, score_purple):
-    print('Game ended. Blue:{} Red:{} Yellow:{} Purple:{}'.format(
-        score_blue, score_red, score_yellow, score_purple
-    ))
-	get_topthree
-    s.say('Top3/Week: #1{0}, #2{1}, #3{2}'.format(top1, top2, top3)) 
+def on_entrance(nick, build, addr):
+    players = s.get_players()
+    for player in players:
+        if player.nick == nick:
+            entered_player = player
+            break
+    player_found = False
+    for scoreboard in list:
+        if entered_player.dplogin == scoreboard.id:
+            player_found = True
+            scoreboard.name = nick
+            print ('Player ' + scoreboard.name + ' logged in')
+            print(str(list))
+            s.say ("{}: K{}/D{}/C{}/S{}".format(scoreboard.name, scoreboard.kills, scoreboard.deaths, scoreboard.caps, scoreboard.score))
+    if not player_found:
+        list.append(Scoreboard(nick, entered_player.dplogin))
+        print('Player ' +  nick + ' added to list.')
+        print(str(list))
+        
+def get_rank(nick):        
+    print ('Player ' + nick + ' requested scoreboard')
+    for scoreboard in list:
+        if nick == scoreboard.name:
+            s.say ("{}: K{}/D{}/C{}/S{}".format(scoreboard.name, scoreboard.kills, scoreboard.deaths, scoreboard.caps, scoreboard.score))
+            break
+        else:
+            s.say ("{0} not logged in".format(nick))
+            break
+
+def get_top10():
+    list.sort(reverse=True, key=lambda scoreboard: scoreboard.score)
+    try:
+        for i in range(10):
+            scoreboard = list[i]
+            s.say("{}: Score:{}".format(scoreboard.name, scoreboard.score))
+    except IndexError:
+        print("No more players")
+            
 @s.event
 def on_chat(nick, message):
     if message == '!rank':
-	    for Player in player_object_list:
-		    if nick == Player.name:
-			    print('Player ' + nick + ' requested list.')
-			    print(str(player_object_list))
-
-			    s.say('{0}: {1}'.format(Player.name, Player.score))
+        get_rank(nick)
+               
+    if message == '!top10':
+        get_top10()
 
 @s.event
 def on_flag_captured(team, nick, flag):
-    print('Flag captured. Team: {0}, Nick: {1}, Flag: {2}'.format(team, nick, flag))
-    for Player in player_object_list:
-	    if nick == Player.name:
-		    add_score(1)
-		    print('Player ' + nick + ' got point!')		    
-		    break
+    for scoreboard in list:
+        if nick == scoreboard.name:
+            scoreboard.add_capture()
+            break
 
 @s.event
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
-    for Player in player_object_list:
-	    if killer_nick == Player.name:
-		    Player.add_score(1)
-		    break
-		    print('Player ' +killer_nick + ' got point!')
-@s.event
-def on_entrance(nick, build, addr):
-    print('Entrance. Nick: {0}, Build: {1}, Address: {2}'.format(nick, build, addr))
-    check_if_player_exists(nick)
-	
-player_object_list = []
-
-def check_if_player_exists(nick):
-    print(nick)
-    print(str(player_object_list))
-    for Player in player_object_list:
-	    if nick == Player.name:
-		    print('Player ' + nick + ' already on list.')
-		    print(str(player_object_list))
-
-		    s.say('{0}: {1}'.format(Player.name, Player.score))
-		    break
-    else:
-	    add_player(nick)
-	    print('Player ' +  nick + ' added to list.')
-	    print(str(player_object_list))
-#def add_player toimii
-def add_player(nick):
-    player_object_list.append(Player(nick, 0))
-
-
-class Player():
-    name = ""
-    score = ""
-	
-    def __init__(self, name, score):
-	    self.name = name
-	    self.score = score
-		
-def add_score(new_score):
-    Player.score = Player.score + new_score
-	    
-def get_topthree(top1, top2, top3):
-    
+    print("eliminated")
+    for scoreboard in list:
+        if killer_nick == scoreboard.name:
+            scoreboard.add_kill()
+        if victim_nick == scoreboard.name:
+            scoreboard.add_death()
 
 s.run()
