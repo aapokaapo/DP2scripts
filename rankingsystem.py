@@ -51,9 +51,11 @@ class PlayerStats():
         self.deaths += deaths
         self.score -= score
 
-    def add_pgp(self, pgp=1):
-        print('Player ' + self.name + ' got a pgp kill')
-        self.pgp += pgp
+    def add_pgp(self, killer_nick, pgp=1):
+        print('Player ' + killer_nick + ' got a pgp kill')
+        for self in list:
+            if killer_nick == self.name:
+                self.pgp += pgp
 
     def add_grab(self, grabs=1, score=3):
         print('Player ' + self.name + ' got a grab')
@@ -63,16 +65,16 @@ class PlayerStats():
 
 list = [PlayerStats('DPBot01', 'bot')]
 
-
 # @s.event
 # def on_entrance(nick, build, addr):
 #          add_player(nick)
 
 
-def get_rank(nick):
+def get_stats(nick):
     print('Player ' + nick + ' requested scoreboard')
     for i in range(len(list)):
         player_stats = list[i]
+        player_found = False
         if player_stats.name == nick:
             s.say("{}: K{}/D{}/C{}/G{}/S{}".format(player_stats.name,
                                                    player_stats.kills,
@@ -80,10 +82,11 @@ def get_rank(nick):
                                                    player_stats.caps,
                                                    player_stats.grabs,
                                                    player_stats.score))
+            player_found = True
             break
-        else:
-            s.say("{0} not logged in".format(nick))
-            break
+    if not player_found:
+        s.say("{0} not logged in".format(nick))
+
 
 
 def get_pgprank(nick):
@@ -98,22 +101,26 @@ def get_pgprank(nick):
 
 def get_top10():
     list.sort(reverse=True, key=lambda player_stats: player_stats.score)
+    player_index = 1
     try:
         for i in range(10):
             player_stats = list[i]
-            s.say("#{}:{}: Score:{}".format(
-                i, player_stats.name, player_stats.score))
+            player_index = i + 1
+            s.say("#{}:{}: Kills:{}/Deaths:{}/Score:{}".format(
+                player_index, player_stats.name, player_stats.kills , player_stats.deaths, player_stats.score))
     except IndexError:
         print("Less than 10 players on list")
 
 
 def get_pgptop10():
     list.sort(reverse=True, key=lambda player_stats: player_stats.pgp)
+    player_index = 1
     try:
         for i in range(10):
             player_stats = list[i]
-            s.say("#{}:{}: Score:{}".format(
-                i, player_stats.name, player_stats.score))
+            player_index = i + 1
+            s.say("#{}:{}: PGP:{}".format(
+                player_index, player_stats.name, player_stats.pgp))
     except IndexError:
         print("Less than 10 players on list")
 
@@ -148,8 +155,8 @@ def add_player(nick):
 
 @s.event
 def on_chat(nick, message):
-    if message == '!rank':
-        get_rank(nick)
+    if message == '!stats':
+        get_stats(nick)
 
     if message == '!top10':
         get_top10()
@@ -172,6 +179,12 @@ def on_flag_captured(team, nick, flag):
             player_stats.add_capture()
             break
 
+@s.event
+def on_elim_teams_flag(team, nick, points):
+    for player_stats in list:
+        if nick == player_stats.name:
+            player_stats.add_grab()
+            break   
 
 @s.event
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
