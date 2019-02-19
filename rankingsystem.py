@@ -133,15 +133,16 @@ def add_player(nick):
     for i in range(len(list)):
         player_stats = list[i]
         print("Comparing dplogin id to player_stats.id")
+        print("List:#{}:{}:{}".format(i, player_stats.name, player_stats.id))
+        print("Trying to add:{}:{}".format(entered_player.nick, entered_player.dplogin))
         if player_stats.id == entered_player.dplogin:
             print("Player {}:{} found from list!".format(nick, entered_player.dplogin))
             player_stats.name = nick
-            break
         player_found = True
         if not player_found:
             list.append(Player_stats(nick, entered_player.dplogin))
             print("Player {}:{} added to list".format(nick, entered_player.dplogin))
-            break
+
 
             
 @s.event
