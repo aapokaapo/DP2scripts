@@ -53,7 +53,7 @@ class Player_stats():
         print('Player ' + self.name + ' got a pgp kill')
         self.pgp += pgp
         
-    def add_grab(self, grabs=1, score=3)
+    def add_grab(self, grabs=1, score=3):
         print('Player ' + self.name + ' got a grab')
         self.grabs += grabs
         self.score += score
@@ -81,9 +81,9 @@ list = [Player_stats('DPBot01', 'bot')]
         
 def get_rank(nick):        
     print ('Player ' + nick + ' requested scoreboard')
-    for player_stats in list:
-    #tämä ei käy kaikki player_stats objecteja läpi listasta list
-        if nick == player_stats.name:
+    for i in range(len(list)):
+        player_stats = list[i]
+        if player_stats.name == nick:
             s.say ("{}: K{}/D{}/C{}/G{}/S{}".format(player_stats.name, player_stats.kills, player_stats.deaths, player_stats.caps, player_stats.grabs, player_stats.score))
             break
         else:
@@ -103,7 +103,6 @@ def get_pgprank(nick):
 
 def get_top10():
     list.sort(reverse=True, key=lambda player_stats: player_stats.score)
-    i = 1
     try:
         for i in range(10):
             player_stats = list[i]
@@ -113,7 +112,6 @@ def get_top10():
 
 def get_pgptop10():
     list.sort(reverse=True, key=lambda player_stats: player_stats.pgp)
-    i = 1
     try:
         for i in range(10):
             player_stats = list[i]
@@ -132,14 +130,14 @@ def add_player(nick):
             print("{}:{}".format(entered_player.nick, entered_player.dplogin))
             break
     player_found = False
-    for player_stats in list:
-        #tämä ei käy kaikkia player_stats objecteja läpi listasta list 
+    for i in range(len(list)):
+        player_stats = list[i]
         print("Comparing dplogin id to player_stats.id")
         if player_stats.id == entered_player.dplogin:
-            player_found = True
             print("Player {}:{} found from list!".format(nick, entered_player.dplogin))
             player_stats.name = nick
             break
+        player_found = True
         if not player_found:
             list.append(Player_stats(nick, entered_player.dplogin))
             print("Player {}:{} added to list".format(nick, entered_player.dplogin))
@@ -178,8 +176,8 @@ def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
     for player_stats in list:
         if killer_nick == player_stats.name:
             player_stats.add_kill()
-        if killer_weapon == pgp
-            player_stats.add_pgp()
+        if killer_weapon == 'PGP':
+            player_stats.add_pgp(killer_nick)
         if victim_nick == player_stats.name:
             player_stats.add_death()
 
