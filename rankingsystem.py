@@ -141,7 +141,7 @@ def add_player(nick):
             player_stats.name = nick
             player_found = True
     if not player_found:
-        list.append(PlayerStats(nick, entered_player.dplogin)
+        list.append(PlayerStats(nick, entered_player.dplogin))
         print("Player {}:{} added to list".format(
                 nick, entered_player.dplogin))
 
