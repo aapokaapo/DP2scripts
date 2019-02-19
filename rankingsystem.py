@@ -66,28 +66,7 @@ list = [PlayerStats('DPBot01', 'bot')]
 
 # @s.event
 # def on_entrance(nick, build, addr):
-#    return
-#    players = s.get_players()
-#    for player in players:
-#        if player.nick == nick:
-#            entered_player = player
-#            break
-#    player_found = False
-#    for player_stats in list:
-#        if entered_player.dplogin == player_stats.id:
-#            player_found = True
-#            player_stats.name = nick
-#            print('Player ' + player_stats.name + ' logged in')
-#            print(str(list))
-#            s.say("{}: K{}/D{}/C{}/S{}".format(player_stats.name,
-#                                               player_stats.kills,
-#                                               player_stats.deaths,
-#                                               player_stats.caps,
-#                                               player_stats.score))
-#    if not player_found:
-#        list.append(PlayerStats(nick, entered_player.dplogin))
-#        print('Player ' + nick + ' added to list.')
-#        print(str(list))
+#          add_player(nick)
 
 
 def get_rank(nick):
@@ -160,10 +139,10 @@ def add_player(nick):
             print("Player {}:{} found from list!".format(
                 nick, entered_player.dplogin))
             player_stats.name = nick
-        player_found = True
-        if not player_found:
-            list.append(PlayerStats(nick, entered_player.dplogin))
-            print("Player {}:{} added to list".format(
+            player_found = True
+    if not player_found:
+        list.append(PlayerStats(nick, entered_player.dplogin)
+        print("Player {}:{} added to list".format(
                 nick, entered_player.dplogin))
 
 
