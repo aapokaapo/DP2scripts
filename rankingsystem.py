@@ -48,43 +48,27 @@ class Scoreboard():
         print ('Player ' + self.name + ' lost a point')
         self.deaths += deaths
         self.score -= score
-        
-@s.event
-def on_chat(nick, message)
-    if message == '!addplayer':
-        players = s.get_players()
-        for player in player:
-            if player.nick == nick
-                entered_player = player:
-                break
-        player_found = False
-        for scoreboard in list:
-            if entered_player.dplogin == scoreboard id:
-                player_found = True
-                scoreboard.name = nick
-                print("Player " + nick + " found from list!")
-            if not player_found:
-                list.append(Scoreboard(nick, entered_player.dplogin))
+ 
 
-@s.event
-def on_entrance(nick, build, addr):
-    players = s.get_players()
-    for player in players:
-        if player.nick == nick:
-            entered_player = player
-            break
-    player_found = False
-    for scoreboard in list:
-        if entered_player.dplogin == scoreboard.id:
-            player_found = True
-            scoreboard.name = nick
-            print ('Player ' + scoreboard.name + ' logged in')
-            print(str(list))
-            s.say ("{}: K{}/D{}/C{}/S{}".format(scoreboard.name, scoreboard.kills, scoreboard.deaths, scoreboard.caps, scoreboard.score))
-    if not player_found:
-        list.append(Scoreboard(nick, entered_player.dplogin))
-        print('Player ' +  nick + ' added to list.')
-        print(str(list))
+#@s.event
+#def on_entrance(nick, build, addr):
+#    players = s.get_players()
+#    for player in players:
+#        if player.nick == nick:
+#            entered_player = player
+#            break
+#    player_found = False
+#    for scoreboard in list:
+#        if entered_player.dplogin == scoreboard.id:
+#            player_found = True
+#            scoreboard.name = nick
+#            print ('Player ' + scoreboard.name + ' logged in')
+#            print(str(list))
+#            s.say ("{}: K{}/D{}/C{}/S{}".format(scoreboard.name, scoreboard.kills, scoreboard.deaths, scoreboard.caps, scoreboard.score))
+#    if not player_found:
+#        list.append(Scoreboard(nick, entered_player.dplogin))
+#        print('Player ' +  nick + ' added to list.')
+#        print(str(list))
         
 def get_rank(nick):        
     print ('Player ' + nick + ' requested scoreboard')
@@ -101,9 +85,31 @@ def get_top10():
     try:
         for i in range(10):
             scoreboard = list[i]
-            s.say("{}: Score:{}".format(scoreboard.name, scoreboard.score))
+            s.say("#{}{}: Score:{}".format(i, scoreboard.name, scoreboard.score))
     except IndexError:
-        print("No more players")
+        print("Less than 10 players on list")
+
+def add_player(nick):
+    players = s.get_players()
+    print("Getting playerlist")
+    for player in players:
+        print("Comparing nick to playerlist")
+        if player.nick == nick:
+            print("Found nick in playerlist")
+            entered_player = player
+            print("{}:{}".format(entered_player.nick, entered_player.dplogin))
+            break
+    player_found = False
+    for scoreboard in list:
+        print("Comparing dplogin id to Scoreboard.id")
+        if scoreboard.id == entered_player.dplogin:
+            player_found = True
+            print("Player " + entered_player.dplogin + " found from list!")
+            scoreboard.name = nick
+        if not player_found:
+            list.append(Scoreboard(nick, entered_player.dplogin))
+            print("Player " + nick + " added to list")
+
             
 @s.event
 def on_chat(nick, message):
@@ -112,6 +118,11 @@ def on_chat(nick, message):
                
     if message == '!top10':
         get_top10()
+     
+    if message == '!addplayer':
+        print("trying to add player")        
+        add_player(nick)
+
 
 @s.event
 def on_flag_captured(team, nick, flag):
