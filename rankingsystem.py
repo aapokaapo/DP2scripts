@@ -23,7 +23,7 @@ s = Server(hostname='178.157.90.120', port=44444,
            rcon_password='endless')
 
 
-class Player_stats():
+class PlayerStats():
 
     def __init__(self, name, id, kills=0, deaths=0, caps=0, grabs=0, pgp=0,
                  score=0):
@@ -61,7 +61,7 @@ class Player_stats():
         self.score += score
 
 
-list = [Player_stats('DPBot01', 'bot')]
+list = [PlayerStats('DPBot01', 'bot')]
 
 
 # @s.event
@@ -85,7 +85,7 @@ list = [Player_stats('DPBot01', 'bot')]
 #                                               player_stats.caps,
 #                                               player_stats.score))
 #    if not player_found:
-#        list.append(Player_stats(nick, entered_player.dplogin))
+#        list.append(PlayerStats(nick, entered_player.dplogin))
 #        print('Player ' + nick + ' added to list.')
 #        print(str(list))
 
@@ -162,7 +162,7 @@ def add_player(nick):
             player_stats.name = nick
         player_found = True
         if not player_found:
-            list.append(Player_stats(nick, entered_player.dplogin))
+            list.append(PlayerStats(nick, entered_player.dplogin))
             print("Player {}:{} added to list".format(
                 nick, entered_player.dplogin))
 
