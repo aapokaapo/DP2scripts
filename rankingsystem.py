@@ -22,7 +22,7 @@ s = Server(hostname='178.157.90.120', port=44444, logfile=r'/home/paintball/pain
 
 
 
-class Scoreboard():
+class Player_stats():
     
     def __init__(self, name, id, kills=0, deaths=0, caps=0, pgp=0, score=0):
         self.name = name
@@ -48,7 +48,7 @@ class Scoreboard():
         self.deaths += deaths
         self.score -= score
  
-list = [Scoreboard('DPBot01', 'bot')]
+list = [Player_stats('DPBot01', 'bot')]
 #@s.event
 #def on_entrance(nick, build, addr):
 #    players = s.get_players()
@@ -57,34 +57,35 @@ list = [Scoreboard('DPBot01', 'bot')]
 #            entered_player = player
 #            break
 #    player_found = False
-#    for scoreboard in list:
-#        if entered_player.dplogin == scoreboard.id:
+#    for player_stats in list:
+#        if entered_player.dplogin == player_stats.id:
 #            player_found = True
-#            scoreboard.name = nick
-#            print ('Player ' + scoreboard.name + ' logged in')
+#            player_stats.name = nick
+#            print ('Player ' + player_stats.name + ' logged in')
 #            print(str(list))
-#            s.say ("{}: K{}/D{}/C{}/S{}".format(scoreboard.name, scoreboard.kills, scoreboard.deaths, scoreboard.caps, scoreboard.score))
+#            s.say ("{}: K{}/D{}/C{}/S{}".format(player_stats.name, player_stats.kills, player_stats.deaths, scoreboard.caps, scoreboard.score))
 #    if not player_found:
-#        list.append(Scoreboard(nick, entered_player.dplogin))
+#        list.append(Player_stats(nick, entered_player.dplogin))
 #        print('Player ' +  nick + ' added to list.')
 #        print(str(list))
         
 def get_rank(nick):        
     print ('Player ' + nick + ' requested scoreboard')
-    for scoreboard in list:
-        if nick == scoreboard.name:
-            s.say ("{}: K{}/D{}/C{}/S{}".format(scoreboard.name, scoreboard.kills, scoreboard.deaths, scoreboard.caps, scoreboard.score))
+    for player_stats in list:
+    #tämä ei käy kaikki player_stats objecteja läpi listasta list
+        if nick == player_stats.name:
+            s.say ("{}: K{}/D{}/C{}/S{}".format(player_stats.name, player_stats.kills, player_stats.deaths, player_stats.caps, player_stats.score))
             break
         else:
             s.say ("{0} not logged in".format(nick))
             break
 
 def get_top10():
-    list.sort(reverse=True, key=lambda scoreboard: scoreboard.score)
+    list.sort(reverse=True, key=lambda player_stats: player_stats.score)
     try:
         for i in range(10):
-            scoreboard = list[i]
-            s.say("#{}{}: Score:{}".format(i, scoreboard.name, scoreboard.score))
+            player_stats = list[i]
+            s.say("#{}:{}: Score:{}".format(i, player_stats.name, player_stats.score))
     except IndexError:
         print("Less than 10 players on list")
 
@@ -98,21 +99,18 @@ def add_player(nick):
             entered_player = player
             print("{}:{}".format(entered_player.nick, entered_player.dplogin))
             break
-    print("test1")
     player_found = False
-    print(str(list))
-    for scoreboard in list:
-        print("Comparing dplogin id to Scoreboard.id")
-        if scoreboard.id == entered_player.dplogin:
+    for player_stats in list:
+        #tämä ei käy kaikkia player_stats objecteja läpi listasta list 
+        print("Comparing dplogin id to player_stats.id")
+        if player_stats.id == entered_player.dplogin:
             player_found = True
-            print("Player " + entered_player.dplogin + " found from list!")
-            print(str(list))
-            scoreboard.name = nick
+            print("Player {}:{} found from list!".format(nick, entered_player.dplogin))
+            player_stats.name = nick
             break
         if not player_found:
-            list.append(Scoreboard(nick, entered_player.dplogin))
-            print("Player " + nick + " added to list")
-            print("{}:{}".format(scoreboard.name, scoreboard.id))
+            list.append(Player_stats(nick, entered_player.dplogin))
+            print("Player {}:{} added to list".format(nick, entered_player.dplogin))
             break
 
             
@@ -131,18 +129,18 @@ def on_chat(nick, message):
 
 @s.event
 def on_flag_captured(team, nick, flag):
-    for scoreboard in list:
-        if nick == scoreboard.name:
-            scoreboard.add_capture()
+    for player_stats in list:
+        if nick == player_stats.name:
+            player_stats.add_capture()
             break
 
 @s.event
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
     print("eliminated")
-    for scoreboard in list:
-        if killer_nick == scoreboard.name:
-            scoreboard.add_kill()
-        if victim_nick == scoreboard.name:
-            scoreboard.add_death()
+    for player_stats in list:
+        if killer_nick == player_stats.name:
+            player_stats.add_kill()
+        if victim_nick == player_stats.name:
+            player_stats.add_death()
 
 s.run()
