@@ -93,13 +93,11 @@ def get_rank(nick):
 def get_pgprank(nick):        
     print ('Player ' + nick + ' requested PGP-scores')
     for player_stats in list:
-    #tämä ei käy kaikki player_stats objecteja läpi listasta list
         if nick == player_stats.name:
             s.say ("{}: PGP:{}".format(player_stats.name, player_stats.pgp))
             break
         else:
             s.say ("{0} not logged in".format(nick))
-            break
 
 def get_top10():
     list.sort(reverse=True, key=lambda player_stats: player_stats.score)
