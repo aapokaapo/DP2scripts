@@ -20,7 +20,6 @@ from dplib.server import Server
 
 s = Server(hostname='178.157.90.120', port=44444, logfile=r'/home/paintball/paintball2/pball/qconsole44444.log', rcon_password='endless')
 
-list = []
 
 
 class Scoreboard():
@@ -49,7 +48,7 @@ class Scoreboard():
         self.deaths += deaths
         self.score -= score
  
-
+list = [Scoreboard('DPBot01', 'bot')]
 #@s.event
 #def on_entrance(nick, build, addr):
 #    players = s.get_players()
@@ -99,16 +98,22 @@ def add_player(nick):
             entered_player = player
             print("{}:{}".format(entered_player.nick, entered_player.dplogin))
             break
+    print("test1")
     player_found = False
+    print(str(list))
     for scoreboard in list:
         print("Comparing dplogin id to Scoreboard.id")
         if scoreboard.id == entered_player.dplogin:
             player_found = True
             print("Player " + entered_player.dplogin + " found from list!")
+            print(str(list))
             scoreboard.name = nick
+            break
         if not player_found:
             list.append(Scoreboard(nick, entered_player.dplogin))
             print("Player " + nick + " added to list")
+            print("{}:{}".format(scoreboard.name, scoreboard.id))
+            break
 
             
 @s.event
