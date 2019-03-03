@@ -21,9 +21,9 @@ import os
 import time
 import threading
 
-s = Server(hostname='178.157.90.120', port=22222,
+s = Server(hostname='127.0.0.1', port=22222,
            logfile=r'/home/paintball/paintball2/pball/qconsole22222.log',
-           rcon_password='endless')
+           rcon_password='hackme')
            
            
 def add_feedback(feedback, nick):
