@@ -18,9 +18,9 @@
 
 from dplib.server import Server
 
-s = Server(hostname='178.157.90.120', port=44444,
+s = Server(hostname='127.0.0.1', port=44444,
            logfile=r'/home/paintball/paintball2/pball/qconsole44444.log',
-           rcon_password='endless')
+           rcon_password='hackme')
 
 
 class PlayerStats():
