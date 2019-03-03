@@ -26,15 +26,21 @@ s = Server(hostname='127.0.0.1', port=22222,
 d = DPLogin()
 
 
-clanid_list = []
-
-def add_clan(clanid):
-    members = d.get_clan_members()
-    s.say("")
+def get_clan(clanid):
+    members = d.get_clan_members(clanid)
+    print(members)
+    for i in range(len(members.get("Leaders"))):
+        active_player = members.get("Leaders")[i].get("name")
+        active_player_id = members.get("Leaders")[i].get("id")
+        s.say(active_player + ":" + active_player_id)
 
 @s.event
 def on_chat(nick, message):
-    if message.startswith('!addclan'):
-        add_clan(message.replace("!addclan",""))
+    print(nick, message)
+    if message.startswith('!getclan'):
+        clanid = message.replace("!getclan ","")
+        print(nick +" added clanid:" +clanid)
+        get_clan(clanid)
+
         
 s.run()
