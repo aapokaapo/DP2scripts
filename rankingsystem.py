@@ -39,6 +39,13 @@ class PlayerStats():
         
 player_list = [PlayerStats('DPBot01', 'bot')]
 
+def no_division_by_zero(player):
+    if player.deaths = 0:
+        n = 1
+    else:
+        n = 0
+    return n
+
 def add_player(nick):
     print("Trying to add player")
     players = s.get_players()
@@ -77,18 +84,12 @@ def add_player(nick):
 def get_top10():
     for e in range(len(player_list)):
         player_stats = player_list[e]
-        if player_stats.deaths == 0:
-            n = 1
-        else:
-            n = 0
+        no_division_by_zero(player_stats)
     player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
     try:
         for i in range(10):
             player_stats = player_list[i]
-            if player_stats.deaths == 0:
-                n = 1
-            else:
-                n = 0
+            no_division_by_zero(player_stats)
             player_index = i + 1
             s.say("#" + str(player_index) 
                 +" {C}E" + player_stats.name 
@@ -102,19 +103,13 @@ def get_top10():
 def get_stats(nick):
     for e in range(len(player_list)):
         player_stats = player_list[e]
-        if player_stats.deaths == 0:
-            n = 1
-        else:
-            n = 0
+        no_division_by_zero(player_stats)
     player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
     print('Player ' + nick + ' requested his stats')
     for i in range(len(player_list)):
         player_index = i + 1
         player_stats = player_list[i]
-        if player_stats.deaths == 0:
-            n = 1
-        else:
-            n = 0
+        no_division_by_zero(player_stats)
         player_found = False
         if player_stats.name == nick:
             s.say("{C}A#" + str(player_index) 
@@ -135,18 +130,12 @@ def save_leaderboard(nick):
         print("whoa used op power to save leaderboard")
         for e in range(len(player_list)):
             player_stats = player_list[e]
-            if player_stats.deaths == 0:
-                n = 1
-            else:
-                n = 0
+            no_division_by_zero(player_stats)
         player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
         for i in range(len(player_list)):
             player_index = i + 1
             player_stats = player_list[i]
-            if player_stats.deaths == 0:
-                n = 1
-            else:
-                n = 0
+            no_division_by_zero(player_stats)
 
 def load_leaderboard(nick):
     filename = "/var/www/html/whoa.ga/feedback/leaderboard.json"
