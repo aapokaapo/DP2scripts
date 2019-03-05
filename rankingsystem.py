@@ -125,7 +125,7 @@ def get_stats(nick):
         s.say("{0} nickname not registered on Leaderboard(TM). Type !addplayer".format(nick))
        
 def save_leaderboard(nick):
-    filename = "/var/www/html/whoa.ga/feedback/leaderboard.json"
+    filename = "/var/www/html/whoa.ga/feedback/leaderboard.txt"
     if nick == "whoa":
         print("whoa used op power to save leaderboard")
         for e in range(len(player_list)):
@@ -136,6 +136,13 @@ def save_leaderboard(nick):
             player_index = i + 1
             player_stats = player_list[i]
             n = no_division_by_zero(player_stats)
+            with open(filename, 'r+') as myfile:
+                myfile.write(str(player_index) + " " 
+                    + str(float(player_stats.kills)/(float(player_stats.deaths +n))) + " " 
+                    + str(player_stats.id) + " " 
+                    + str(player_stats.kills) + " " 
+                    + str(player_stats.kills) + " " 
+                    + player_stats.name + "\n")
 
 def load_leaderboard(nick):
     filename = "/var/www/html/whoa.ga/feedback/leaderboard.json"
