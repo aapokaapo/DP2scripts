@@ -1,7 +1,6 @@
 from dplib.server import Server
 from time import sleep
 import threading
-import jsonpickle as json
 
 s = Server(hostname='127.0.0.1', port=22222,
            logfile=r'/home/user/paintball2/pball/qconsole22222.log',
@@ -127,31 +126,46 @@ def get_stats(nick):
 def save_leaderboard(nick):
     filename = "/var/www/html/whoa.ga/feedback/leaderboard.txt"
     if nick == "whoa":
-        print("whoa used op power to save leaderboard")
-        for e in range(len(player_list)):
-            player_stats = player_list[e]
-            n = no_division_by_zero(player_stats)
-        player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
-        for i in range(len(player_list)):
-            player_index = i + 1
-            player_stats = player_list[i]
-            n = no_division_by_zero(player_stats)
-            with open(filename, 'r+') as myfile:
+        with open(filename, 'w') as myfile:
+            print("whoa used op power to save leaderboard")
+            for e in range(len(player_list)):
+                player_stats = player_list[e]
+                n = no_division_by_zero(player_stats)
+            player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
+            for i in range(len(player_list)):
+                player_index = i + 1
+                player_stats = player_list[i]
+                n = no_division_by_zero(player_stats)
                 myfile.write(str(player_index) + " " 
                     + str(float(player_stats.kills)/(float(player_stats.deaths +n))) + " " 
+                    + str(player_stats.kills) + " " 
+                    + str(player_stats.deaths) + " "
+                    + str(player_stats.caps) + " " 
+                    + str(player_stats.grabs) + " "
                     + str(player_stats.id) + " " 
-                    + str(player_stats.kills) + " " 
-                    + str(player_stats.kills) + " " 
                     + player_stats.name + "\n")
+        s.say("{C}0***{C}CLeaderboard save{C}0***")
+
+                
 
 def load_leaderboard(nick):
-    filename = "/var/www/html/whoa.ga/feedback/leaderboard.json"
+    filename = "/var/www/html/whoa.ga/feedback/leaderboard.txt"
     if nick == "whoa":
-        print("whoa used op power to load leaderboard")
+        player_list.clear()
+        player_stats = PlayerStats
         with open(filename, 'r') as myfile:
-            print("opening file")
-            json_object = myfile.read()
-            player_list = json.decode(json_object)
+            while True:
+                line = myfile.readline()
+                if not line:
+                    break            
+                saved_player = line.split()
+                player_stats.name = saved_player[7]
+                player_stats.kills = int(saved_player[2])
+                player_stats.deaths = int(saved_player[3])
+                player_stats.caps = int(saved_player[4])
+                player_stats.grabs = int(saved_player[5 ])
+                player_stats.id = saved_player[6]
+                player_list.append(player_stats)
             print("player_list loaded")
             print(player_list)
 
