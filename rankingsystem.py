@@ -1,158 +1,168 @@
-# DPLib - Asynchronous bot framework for Digital Paint: Paintball 2 servers
-# Copyright (C) 2017  MichaÅ‚ Rokita
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# Ranking system
-
 from dplib.server import Server
+from time import sleep
+import threading
+import jsonpickle as json
 
-s = Server(hostname='127.0.0.1', port=44444,
-           logfile=r'/home/paintball/paintball2/pball/qconsole44444.log',
+s = Server(hostname='127.0.0.1', port=22222,
+           logfile=r'/home/user/paintball2/pball/qconsole22222.log',
            rcon_password='hackme')
 
 
+print("ServerSide DP2RankingSystem running. Made by whoa")
+
 class PlayerStats():
 
-    def __init__(self, name, id, kills=0, deaths=0, caps=0, grabs=0, pgp=0,
-                 score=0):
+    def __init__(self, name, id, kills=0, deaths=0, caps=0, grabs=0):
         self.name = name
         self.id = id
         self.kills = kills
         self.deaths = deaths
         self.caps = caps
         self.grabs = grabs
-        self.pgp = pgp
-        self.score = score
 
-    def add_kill(self, kills=1, score=1):
+    def add_kill(self, kills=1):
         print('Player ' + self.name + ' got a point')
         self.kills += kills
-        self.score += score
-
-    def add_capture(self, caps=1, score=5):
-        print('Player ' + self.name + ' got 5 points')
+            
+    def add_capture(self, caps=1):
+        print('Player ' + self.name + ' captured the flag')
         self.caps += caps
-        self.score += score
 
-    def add_death(self, deaths=1, score=1):
-        print('Player ' + self.name + ' lost a point')
+    def add_death(self, deaths=1):
+        print('Player ' + self.name + ' died')
         self.deaths += deaths
-        self.score -= score
-
-    def add_pgp(self, killer_nick, pgp=1):
-        print('Player ' + killer_nick + ' got a pgp kill')
-        for self in list:
-            if killer_nick == self.name:
-                self.pgp += pgp
-
-    def add_grab(self, grabs=1, score=3):
+            
+    def add_grab(self, grabs=1):
         print('Player ' + self.name + ' got a grab')
         self.grabs += grabs
-        self.score += score
-
-
-list = [PlayerStats('DPBot01', 'bot')]
-
-# @s.event
-# def on_entrance(nick, build, addr):
-#          add_player(nick)
-
-
-def get_stats(nick):
-    print('Player ' + nick + ' requested scoreboard')
-    for i in range(len(list)):
-        player_stats = list[i]
-        player_found = False
-        if player_stats.name == nick:
-            s.say("{}: K{}/D{}/C{}/G{}/S{}".format(player_stats.name,
-                                                   player_stats.kills,
-                                                   player_stats.deaths,
-                                                   player_stats.caps,
-                                                   player_stats.grabs,
-                                                   player_stats.score))
-            player_found = True
-            break
-    if not player_found:
-        s.say("{0} not logged in".format(nick))
-
-
-
-def get_pgprank(nick):
-    print('Player ' + nick + ' requested PGP-scores')
-    for player_stats in list:
-        if nick == player_stats.name:
-            s.say("{}: PGP:{}".format(player_stats.name, player_stats.pgp))
-            break
-        else:
-            s.say("{0} not logged in".format(nick))
-
-
-def get_top10():
-    list.sort(reverse=True, key=lambda player_stats: player_stats.score)
-    player_index = 1
-    try:
-        for i in range(10):
-            player_stats = list[i]
-            player_index = i + 1
-            s.say("#{}:{}: Kills:{}/Deaths:{}/Score:{}".format(
-                player_index, player_stats.name, player_stats.kills , player_stats.deaths, player_stats.score))
-    except IndexError:
-        print("Less than 10 players on list")
-
-
-def get_pgptop10():
-    list.sort(reverse=True, key=lambda player_stats: player_stats.pgp)
-    player_index = 1
-    try:
-        for i in range(10):
-            player_stats = list[i]
-            player_index = i + 1
-            s.say("#{}:{}: PGP:{}".format(
-                player_index, player_stats.name, player_stats.pgp))
-    except IndexError:
-        print("Less than 10 players on list")
-
+        
+        
+player_list = [PlayerStats('DPBot01', 'bot')]
 
 def add_player(nick):
+    print("Trying to add player")
     players = s.get_players()
-    print("Getting playerlist")
+    print("Getting in-game playerlist with GL id's")
     for player in players:
-        print("Comparing nick to playerlist")
+        print("Comparing in-game playerlist nick to the message senders nick")
         if player.nick == nick:
-            print("Found nick in playerlist")
+            print("Found senders nick in in-game playerlist")
             entered_player = player
-            print("{}:{}".format(entered_player.nick, entered_player.dplogin))
+            print(entered_player.nick + " : " + entered_player.dplogin)
             break
     player_found = False
-    for i in range(len(list)):
-        player_stats = list[i]
-        print("Comparing dplogin id to player_stats.id")
-        print("List:#{}:{}:{}".format(i, player_stats.name, player_stats.id))
+    for i in range(len(player_list)):
+        player_stats = player_list[i]
+        print("Comparing dplogin id to already registered id's")
+        print("player_list:#{}:{}:{}".format(i, player_stats.name, player_stats.id))
         print("Trying to add:{}:{}".format(
             entered_player.nick, entered_player.dplogin))
         if player_stats.id == entered_player.dplogin:
-            print("Player {}:{} found from list!".format(
+            print("Player {}:{} found from Leaderboard!".format(
                 nick, entered_player.dplogin))
+            s.say("Player " + nick + ":" + entered_player.dplogin + " found from leaderboard")
             player_stats.name = nick
             player_found = True
     if not player_found:
-        list.append(PlayerStats(nick, entered_player.dplogin))
-        print("Player {}:{} added to list".format(
+        
+        if entered_player.dplogin == "":
+            s.say("{C}C!!!WARNING!!! " + nick + " {C}Cdoes not have Global Login id, please login")
+        else:
+            player_list.append(PlayerStats(nick, entered_player.dplogin))
+            print("Player {}:{} added to player_list".format(
                 nick, entered_player.dplogin))
+            s.say("Player " + nick + ":" + entered_player.dplogin + " added to leaderboard")
+        
+        
+def get_top10():
+    for e in range(len(player_list)):
+        player_stats = player_list[e]
+        if player_stats.deaths == 0:
+            n = 1
+        else:
+            n = 0
+    player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
+    try:
+        for i in range(10):
+            player_stats = player_list[i]
+            if player_stats.deaths == 0:
+                n = 1
+            else:
+                n = 0
+            player_index = i + 1
+            s.say("#" + str(player_index) 
+                +" {C}E" + player_stats.name 
+                + ":{C}LK:" + str(player_stats.kills) 
+                + "{C}0/{C}BD:" + str(player_stats.deaths) 
+                + "{C}0/{C}OK/D:" + str(round(player_stats.kills/(player_stats.deaths +n) ,2))
+                )
+    except IndexError:
+        print("Less than 10 players on Leaderboard")
+        
+def get_stats(nick):
+    for e in range(len(player_list)):
+        player_stats = player_list[e]
+        if player_stats.deaths == 0:
+            n = 1
+        else:
+            n = 0
+    player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
+    print('Player ' + nick + ' requested his stats')
+    for i in range(len(player_list)):
+        player_index = i + 1
+        player_stats = player_list[i]
+        if player_stats.deaths == 0:
+            n = 1
+        else:
+            n = 0
+        player_found = False
+        if player_stats.name == nick:
+            s.say("{C}A#" + str(player_index) 
+                + " {C}E" + player_stats.name 
+                + ":{C}LK:" + str(player_stats.kills) 
+                + "{C}0/{C}BD:"+ str(player_stats.deaths) 
+                + "{C}0/{C}LC:"+ str(player_stats.caps) 
+                + "{C}0/{C}LG:" + str(player_stats.grabs) 
+                + "{C}0/{C}OK/D:" + str(round(player_stats.kills/(player_stats.deaths + n),2)) )
+            player_found = True
+            break
+    if not player_found:
+        s.say("{0} nickname not registered on Leaderboard(TM). Type !addplayer".format(nick))
+       
+def save_leaderboard(nick):
+    filename = "/var/www/html/whoa.ga/feedback/leaderboard.json"
+    if nick == "whoa":
+        print("whoa used op power to save leaderboard")
+        for e in range(len(player_list)):
+            player_stats = player_list[e]
+            if player_stats.deaths == 0:
+                n = 1
+            else:
+                n = 0
+        player_list.sort(reverse=True, key=lambda player_stats: float(player_stats.kills)/float(player_stats.deaths + n))
+        for i in range(len(player_list)):
+            player_index = i + 1
+            player_stats = player_list[i]
+            if player_stats.deaths == 0:
+                n = 1
+            else:
+                n = 0
 
+def load_leaderboard(nick):
+    filename = "/var/www/html/whoa.ga/feedback/leaderboard.json"
+    if nick == "whoa":
+        print("whoa used op power to load leaderboard")
+        with open(filename, 'r') as myfile:
+            print("opening file")
+            json_object = myfile.read()
+            player_list = json.decode(json_object)
+            print("player_list loaded")
+            print(player_list)
 
+def debug1(nick):
+    if nick == "whoa":
+        print(player_list)
+        
 @s.event
 def on_chat(nick, message):
     if message == '!stats':
@@ -162,40 +172,48 @@ def on_chat(nick, message):
         get_top10()
 
     if message == '!addplayer':
-        print("trying to add player")
         add_player(nick)
 
-    if message == '!pgp':
-        get_pgprank(nick)
-
-    if message == '!pgptop10':
-        get_pgptop10()
-
-
+    if message == '!save':
+        save_leaderboard(nick)
+    
+    if message == '!load':
+        load_leaderboard(nick)
+        
+    if message == '!debug1':
+        debug1(nick)
+            
 @s.event
 def on_flag_captured(team, nick, flag):
-    for player_stats in list:
+    for player_stats in player_list:
         if nick == player_stats.name:
             player_stats.add_capture()
             break
 
 @s.event
 def on_elim_teams_flag(team, nick, points):
-    for player_stats in list:
+    for player_stats in player_list:
         if nick == player_stats.name:
             player_stats.add_grab()
             break   
 
 @s.event
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
-    print("eliminated")
-    for player_stats in list:
+    print("elimination")
+    for player_stats in player_list:
         if killer_nick == player_stats.name:
             player_stats.add_kill()
-        if killer_weapon == 'PGP':
-            player_stats.add_pgp(killer_nick)
         if victim_nick == player_stats.name:
             player_stats.add_death()
-
+            
+def infomessage():
+    s.say("{C}DTo add yourself to leaderboard, type !addplayer")
+    sleep(60)
+    s.say("{C}DTo see your stats type !stats")
+    t = threading.Timer(300.0, infomessage,())
+    t.start()
+t = threading.Timer(300.0, infomessage,())
+t.start()
 
 s.run()
+            
