@@ -136,6 +136,14 @@ def save_leaderboard(nick):
                 player_index = i + 1
                 player_stats = player_list[i]
                 n = no_division_by_zero(player_stats)
+                s.say(str(player_index) + " " 
+                    + str(float(player_stats.kills)/(float(player_stats.deaths +n))) + " " 
+                    + str(player_stats.kills) + " " 
+                    + str(player_stats.deaths) + " "
+                    + str(player_stats.caps) + " " 
+                    + str(player_stats.grabs) + " "
+                    + str(player_stats.id) + " " 
+                    + player_stats.name)
                 myfile.write(str(player_index) + " " 
                     + str(float(player_stats.kills)/(float(player_stats.deaths +n))) + " " 
                     + str(player_stats.kills) + " " 
