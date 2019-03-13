@@ -1,5 +1,4 @@
-# DPLib - Asynchronous bot framework for Digital Paint: Paintball 2 servers
-# Copyright (C) 2017  MichaÅ‚ Rokita
+# Copyright (C) 2019  Aapo Kinnunen
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -13,8 +12,6 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# Ranking system
 
 from dplib.server import Server
 import os
