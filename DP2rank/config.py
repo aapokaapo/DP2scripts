@@ -5,7 +5,7 @@ import threading
 # Define the portnumber, logfile and rcon_password
 s = Server(hostname='127.0.0.1', port=11111,
            logfile=r'/home/paintball/paintball2/pball/qconsole11111.log',
-           rcon_password='whoaisbest')
+           rcon_password='hackme')
            
 # Define where the script will save the leaderboard
 savefile = "leaderboard.txt"
