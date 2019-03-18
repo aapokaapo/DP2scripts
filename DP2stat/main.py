@@ -1,5 +1,7 @@
 from playerstats import PlayerStats
+from crontab import CronTab
 import config
+
 
 s =config.s
 
@@ -28,11 +30,20 @@ def add_player(nick):
             print("Player {}:{} added to Leaderboard(TM)".format(
                 nick, entered_player.dplogin))
             s.say("{C}C***Player " + nick + ":" + entered_player.dplogin + " added to DP2Leaderboard(TM)***")
+ 
+ 
+def stats_reset():
+    for player in player_list:
+        player.kills = 0
+        player.deaths = 0
+        player.caps = 0
+        player.grabs = 0
+    print("stats reseted")
 
 def get_help():
-    s.say("{C}DType {C}?!stats {C}Dto see your current stats")
-    s.say("{C}DType {C}?!top10 {C}Dto see current top10")
-    s.say("{C}DType {C}?!top10kd {C}Dto see current top10 on K/D-ratio")
+    s.say("{C}DType {C}?!stats {C}Dto see your current stats, player can use only once/map")
+    s.say("{C}DType {C}?!top10 {C}Dto see current top10, player can use only once/map")
+    s.say("{C}DType {C}?!top10kd {C}Dto see current top10 on K/D-ratio, player can use only once/map")
     s.say("{C}DType {C}?!addplayer {C}Dto add yourself to the leaderboard")
     s.say("{C}DYou must have a Global Login account to use DP2Leaderboard(TM)")
 
@@ -90,8 +101,8 @@ def get_stats(nick):
             
         player_found = False
         if player_stats.name == nick:
-            s.say("{C}A#" + str(player_index)
-                + " {C}E" + player_stats.name
+            s.say("{C}D#" + str(player_index)
+                + " " + player_stats.name
                 + ":{C}LK:" + str(player_stats.kills)
                 + "{C}0/{C}BD:"+ str(player_stats.deaths)
                 + "{C}0/{C}LC:"+ str(player_stats.caps)
@@ -102,11 +113,11 @@ def get_stats(nick):
             player_found = True
             break
     if not player_found:
-        s.say("{0} nickname not registered on Leaderboard(TM). Type !addplayer".format(nick))
+        s.say("{0} nickname not registered on DP2Leaderboard(TM). Type !addplayer".format(nick))
         
 def leaderboard_save():
     with open(config.savefile, 'w') as myfile:
-        myfile.write("# DP2RankingSystem Leaderboard\n# RANK K/D K D C G ID NAME\n")
+        myfile.write("# DP2Stats Leaderboard\n# RANK K/D K D C G ID NAME\n")
         print("Map changed. Leaderboard saved.") 
         player_list.sort(reverse=True, key=lambda player_stats: player_stats.kills-player_stats.deaths+3*player_stats.grabs+5*player_stats.caps)
         for i in range(len(player_list)):
@@ -114,9 +125,9 @@ def leaderboard_save():
             player_stats = player_list[i]
             deaths = player_stats.deaths
             if deaths == 0:
-                kd = (float(player_stats.kills)/int(1))
+                kd = round((float(player_stats.kills)/int(1)), 3)
             else:
-                kd = (float(player_stats.kills)/float(player_stats.deaths))
+                kd = round((float(player_stats.kills)/float(player_stats.deaths)), 3)
             myfile.write(str(player_index) + " "
                 + str(kd) + " "
                 + str(player_stats.kills) + " "
