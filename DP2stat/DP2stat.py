@@ -19,7 +19,7 @@ from config import infomessage
 import main
 import threading
 import floodprotection as f
-import GRclient
+import GSclient
 import crython
     
 print("ServerSide DP2RankingSystem running. Made by whoa (and Toolwut)\n------- Clan [s] making Digital Paintball2 great again!-------")
@@ -94,7 +94,7 @@ def on_mapchange(mapname):
     f.on_timeout_stats.clear()
     f.on_timeout_top10.clear()
     f.on_timeout_top10kd.clear()
-#    GRclient.leaderboard_save()
+#    GSclient.leaderboard_save()
 
 @crython.job(expr='@monthly')
 def statsboard_reset():
