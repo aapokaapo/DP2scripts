@@ -20,21 +20,30 @@ import main
 import threading
 import floodprotection as f
 import GRclient
+import crython
     
 print("ServerSide DP2RankingSystem running. Made by whoa (and Toolwut)\n------- Clan [s] making Digital Paintball2 great again!-------")
 
 main.leaderboard_load()
 
+round_started = False
 
+@s.event
+def on_round_started():
+    global round_started
+    round_started = True
 
 @s.event
 def on_chat(nick, message):
     if message == '!stats':
-        main.get_stats(nick)
+        flooding = False
+        flooding = f.floodprotection_stats(nick)
+        if not flooding:
+            main.get_stats(nick)
 
     if message == '!top10':
         flooding = False
-        flooding = f.floodprotection(nick)
+        flooding = f.floodprotection_top10(nick)
         if not flooding:
             main.get_top10()
 
@@ -43,45 +52,59 @@ def on_chat(nick, message):
 
     if message == '!top10kd':
         flooding = False
-        flooding = f.floodprotection_kd(nick)
+        flooding = f.floodprotection_top10kd(nick)
         if not flooding:
             main.get_top10kd()
         
     if message == '!help':
         main.get_help()
-
+        
 
 @s.event
 def on_flag_captured(team, nick, flag):
-    for player_stats in main.player_list:
-        if nick == player_stats.name:
-            player_stats.add_capture()
-            break
+    if round_started:
+        for player_stats in main.player_list:
+            if nick == player_stats.name:
+                player_stats.add_capture()
+                break
 
 @s.event
 def on_elim_teams_flag(team, nick, points):
-    for player_stats in main.player_list:
-        if nick == player_stats.name:
-            player_stats.add_grab()
-            break
+    if round_started:
+        for player_stats in main.player_list:
+            if nick == player_stats.name:
+                player_stats.add_grab()
+                break
 
 @s.event
 def on_elim(killer_nick, killer_weapon, victim_nick, victim_weapon):
     print("elimination")
-    for player_stats in main.player_list:
-        if killer_nick == player_stats.name:
-            player_stats.add_kill()
-        if victim_nick == player_stats.name:
-            player_stats.add_death()
+    if round_started:
+        for player_stats in main.player_list:
+            if killer_nick == player_stats.name:
+                player_stats.add_kill()
+            if victim_nick == player_stats.name:
+                player_stats.add_death()
 
 @s.event
 def on_mapchange(mapname):
+    global round_started
+    round_started = False
     main.leaderboard_save()
-    GRclient.leaderboard_save()
-    f.on_timeout.clear()
-    f.on_timeout_kd.clear()
+    f.on_timeout_stats.clear()
+    f.on_timeout_top10.clear()
+    f.on_timeout_top10kd.clear()
+#    GRclient.leaderboard_save()
 
-t = threading.Timer(300.0, infomessage,())
+@crython.job(expr='@monthly')
+def statsboard_reset():
+    main.stats_reset()
+
+if __name__ == '__main__':
+    crython.tab.start() #start the global cron tab scheduler which runs in a background thread
+
+t = threading.Timer(300.0, infomessage)
 t.start()
 
 s.run()
+
