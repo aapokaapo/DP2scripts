@@ -1,11 +1,21 @@
 from playerstats import PlayerStats
-from crontab import CronTab
 import config
 
+winner = ""
 
 s =config.s
 
 player_list = [PlayerStats('DPBot01', 'bot')]
+
+def last_month_winner():
+    with open(config.savefile2, "r") as myfile:
+        for line in myfile:
+            if not line.startswith("#"):
+                break
+        global winner
+        line = line.split()
+        winner = line[6]
+        print("Last months winner:" + winner)
 
 def add_player(nick):
     players = s.get_players()
@@ -17,20 +27,19 @@ def add_player(nick):
     for i in range(len(player_list)):
         player_stats = player_list[i]
         if player_stats.id == entered_player.dplogin:
-            s.say("{C}C***Player " + nick + ":" + entered_player.dplogin + " already on DP2Leaderboard(TM)***")
             player_stats.name = nick
             player_found = True
             print(player_stats.name + " already on Leaderboard(TM)")
     if not player_found:
 
         if entered_player.dplogin == "":
-            s.say("{C}C!!!WARNING " + nick + " does not have Global Login id, please login!!!")
+            print(entered_player.nick + " doesn't have dplogin, stats won't be tracked")
+        elif entered_player.dplogin == "bot":
+            print("DP2Leaderboard(TM) is not for bots")
         else:
             player_list.append(PlayerStats(nick, entered_player.dplogin))
             print("Player {}:{} added to Leaderboard(TM)".format(
                 nick, entered_player.dplogin))
-            s.say("{C}C***Player " + nick + ":" + entered_player.dplogin + " added to DP2Leaderboard(TM)***")
- 
  
 def stats_reset():
     for player in player_list:
@@ -38,14 +47,15 @@ def stats_reset():
         player.deaths = 0
         player.caps = 0
         player.grabs = 0
+    last_month_winner()
     print("stats reseted")
-
+    
 def get_help():
-    s.say("{C}DType {C}?!stats {C}Dto see your current stats, player can use only once/map")
-    s.say("{C}DType {C}?!top10 {C}Dto see current top10, player can use only once/map")
-    s.say("{C}DType {C}?!top10kd {C}Dto see current top10 on K/D-ratio, player can use only once/map")
-    s.say("{C}DType {C}?!addplayer {C}Dto add yourself to the leaderboard")
     s.say("{C}DYou must have a Global Login account to use DP2Leaderboard(TM)")
+    s.say("{C}DType {C}?!stats {C}Dto see your current stats")
+    s.say("{C}DType {C}?!top10 {C}Dto see current top10")
+    s.say("{C}DType {C}?!top10kd {C}Dto see current top10 on K/D-ratio")
+    s.say("{C}DPlayer can use each command once/map!")
 
 def get_top10():
     player_list.sort(reverse=True, key=lambda player_stats: player_stats.kills-player_stats.deaths+3*player_stats.grabs+5*player_stats.caps)
@@ -54,12 +64,20 @@ def get_top10():
             player_stats = player_list[i]
             player_index = i + 1
             score = (player_stats.kills - player_stats.deaths + 3*player_stats.grabs + 5*player_stats.caps)
-            s.say("{C}D#" + str(player_index)
-                +" {C}D" + player_stats.name
-                + ":{C}LK:" + str(player_stats.kills)
-                + "{C}0/{C}BD:" + str(player_stats.deaths)
-                + "{C}0/{C}LS:" + str(score)
-                )
+            if player_stats.id == winner:
+                s.say("{C}D#" + str(player_index)
+                    +" {C}O" + player_stats.name
+                    + ":{C}LK:" + str(player_stats.kills)
+                    + "{C}0/{C}BD:" + str(player_stats.deaths)
+                    + "{C}0/{C}LS:" + str(score)
+                    )
+            else:
+                s.say("{C}D#" + str(player_index)
+                    +" {C}D" + player_stats.name
+                    + ":{C}LK:" + str(player_stats.kills)
+                    + "{C}0/{C}BD:" + str(player_stats.deaths)
+                    + "{C}0/{C}LS:" + str(score)
+                    )
     except IndexError:
         print("Less than 10 players on Leaderboard")
         
@@ -71,18 +89,27 @@ def get_top10kd():
     try:
         for i in range(10):
             player_stats = player_list[i]
-            player_index = i + 1
+            player_index = i + 1 
             deaths = player_stats.deaths
             if deaths == 0:
                 kd = "{:0.2f}".format(float(player_stats.kills)/int(1))
             else:
                 kd = "{:0.2f}".format(float(player_stats.kills)/float(player_stats.deaths))
-            s.say("{C}D#" + str(player_index)
-                +" {C}D" + player_stats.name
-                + ":{C}LK:" + str(player_stats.kills)
-                + "{C}0/{C}BD:" + str(player_stats.deaths)
-                + "{C}0/{C}OK/D:" + str(kd)
-                )
+            if player_stats.id == winner:
+                s.say("{C}D#" + str(player_index)
+                    +" {C}O" + player_stats.name
+                    + ":{C}LK:" + str(player_stats.kills)
+                    + "{C}0/{C}BD:" + str(player_stats.deaths)
+                    + "{C}0/{C}OK/D:" + str(kd)
+                    )
+            else:
+                s.say("{C}D#" + str(player_index)
+                    +" {C}D" + player_stats.name
+                    + ":{C}LK:" + str(player_stats.kills)
+                    + "{C}0/{C}BD:" + str(player_stats.deaths)
+                    + "{C}0/{C}OK/D:" + str(kd)
+                    )
+          
     except IndexError:
         print("Less than 10 players on Leaderboard")
 
@@ -91,7 +118,7 @@ def get_stats(nick):
     print('Player ' + nick + ' requested his stats')
     for i in range(len(player_list)):
         player_index = i + 1
-        player_stats = player_list[i]
+        player_stats = player_list[i]                
         score = (player_stats.kills - player_stats.deaths + 3*player_stats.grabs + 5*player_stats.caps)
         deaths = player_stats.deaths
         if deaths == 0:
@@ -101,15 +128,28 @@ def get_stats(nick):
             
         player_found = False
         if player_stats.name == nick:
-            s.say("{C}D#" + str(player_index)
-                + " " + player_stats.name
-                + ":{C}LK:" + str(player_stats.kills)
-                + "{C}0/{C}BD:"+ str(player_stats.deaths)
-                + "{C}0/{C}LC:"+ str(player_stats.caps)
-                + "{C}0/{C}LG:" + str(player_stats.grabs)
-                + "{C}0/{C}LS:" + str(score)
-                + "{C}0/{C}OK/D:" + str(kd)
-                )
+            if player_stats.id == winner:
+                s.say("{C}D#" + str(player_index)
+                    + " {C}O" + player_stats.name
+                    + ":{C}LK:" + str(player_stats.kills)
+                    + "{C}0/{C}BD:"+ str(player_stats.deaths)
+                    + "{C}0/{C}LC:"+ str(player_stats.caps)
+                    + "{C}0/{C}LG:" + str(player_stats.grabs)
+                    + "{C}0/{C}LS:" + str(score)
+                    + "{C}0/{C}OK/D:" + str(kd)
+                    )
+                player_found = True
+                break
+            else:
+                s.say("{C}D#" + str(player_index)
+                    + " " + player_stats.name
+                    + ":{C}LK:" + str(player_stats.kills)
+                    + "{C}0/{C}BD:"+ str(player_stats.deaths)
+                    + "{C}0/{C}LC:"+ str(player_stats.caps)
+                    + "{C}0/{C}LG:" + str(player_stats.grabs)
+                    + "{C}0/{C}LS:" + str(score)
+                    + "{C}0/{C}OK/D:" + str(kd)
+                    )
             player_found = True
             break
     if not player_found:
@@ -152,7 +192,7 @@ def leaderboard_load():
                     grabs = int(saved_player[5 ])
                     id = saved_player[6]
                     player_list.append(PlayerStats(nick, id, kills, deaths, caps, grabs))
-                    s.say(nick +" "+ id)
+                    print(nick +" "+ id)
             print("player_list loaded")
             s.say("{C}0***{C}CLeaderboard loaded{C}0***")
     except FileNotFoundError:
