@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+from time import sleep
 from config import s
 from config import infomessage
 import main
@@ -22,7 +22,7 @@ import floodprotection as f
 import GSclient
 import crython
     
-print("ServerSide DP2RankingSystem running. Made by whoa (and Toolwut)\n------- Clan [s] making Digital Paintball2 great again!-------")
+print("ServerSide DP2stat running. Made by whoa (and Toolwut)\n------- Clan [s] making Digital Paintball2 great again!-------")
 
 main.leaderboard_load()
 
@@ -37,7 +37,6 @@ def on_round_started():
 def on_chat(nick, message):
     if message == '!stats':
         flooding = False
-        flooding = f.floodprotection_stats(nick)
         if not flooding:
             main.get_stats(nick)
 
@@ -46,9 +45,6 @@ def on_chat(nick, message):
         flooding = f.floodprotection_top10(nick)
         if not flooding:
             main.get_top10()
-
-    if message == '!addplayer':
-        main.add_player(nick)
 
     if message == '!top10kd':
         flooding = False
@@ -59,6 +55,19 @@ def on_chat(nick, message):
     if message == '!help':
         main.get_help()
         
+    if message =='!debug1':
+        if nick == "whoa":
+            main.stats_reset()
+@s.event
+def on_namechange(old_nick, new_nick):
+    if not old_nick == "":
+        sleep(1)
+        main.add_player(new_nick)
+     
+@s.event
+def on_entrance(nick, build, addr):
+    sleep(1)
+    main.add_player(nick)
 
 @s.event
 def on_flag_captured(team, nick, flag):
@@ -96,15 +105,14 @@ def on_mapchange(mapname):
     f.on_timeout_top10kd.clear()
 #    GSclient.leaderboard_save()
 
-@crython.job(expr='@monthly')
+@crython.job(expr='0 0 0 0 1 * *')
 def statsboard_reset():
     main.stats_reset()
 
 if __name__ == '__main__':
     crython.tab.start() #start the global cron tab scheduler which runs in a background thread
 
-t = threading.Timer(300.0, infomessage)
+t = threading.Timer(300.0, infomessage) #this defines how often the automated infomessage runs, time in seconds (default 300)
 t.start()
 
 s.run()
-
