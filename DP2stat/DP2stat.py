@@ -55,9 +55,6 @@ def on_chat(nick, message):
     if message == '!help':
         main.get_help()
         
-    if message =='!debug1':
-        if nick == "whoa":
-            main.stats_reset()
 @s.event
 def on_namechange(old_nick, new_nick):
     if not old_nick == "":
