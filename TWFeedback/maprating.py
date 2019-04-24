@@ -51,9 +51,9 @@ def add_feedback(feedback, nick, good):
 @s.event
 def on_chat(nick, message):
     if message.startswith('!badmap'):
-        add_feedback(message.replace("!badmap",""), nick, !good)
+        add_feedback(message.replace("!badmap",""), nick, false)
     elif message.startswith('!goodmap'):
-        add_feedback(message.replace("!goodmap",""), nick, good)
+        add_feedback(message.replace("!goodmap",""), nick, true)
 
 def infomessage():
     s.say("{C}0***{C}EDo you like this map? type '!goodmap <reason>' if you do, or '!badmap <reason>' if you dont!{C}0***")  
