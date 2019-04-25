@@ -106,7 +106,7 @@ def add_feedback(feedback, nick, good):
    
 def replaceline(path, oldcontent, newcontent):
     copyfile(path+".txt", path+"tmp.txt")
-    with fdopen(path+".txt", "w") as new_file:
+    with os.fdopen(path+".txt", "w") as new_file:
         with open(path+"tmp.txt") as old_file:
             for line in old_file:
                 if(line == oldcontent):
