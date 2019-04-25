@@ -97,8 +97,10 @@ def add_feedback(feedback, nick, good):
             con += 1
     f.close()
     percentage=0
-    if pro+con==total:
+    if not total=0:
         percentage=pro/total*100
+    else:
+        percentage=-1
     f=open(ratefilename, "r")
     for lines in f:
         if lines.startswith(mapname):
