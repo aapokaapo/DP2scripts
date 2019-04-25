@@ -97,7 +97,7 @@ def add_feedback(feedback, nick, good):
             con += 1
     f.close()
     percentage=0
-    if not total=0:
+    if not total==0:
         percentage=pro/total*100
     else: # test2
         percentage=-1
