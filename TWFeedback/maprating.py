@@ -93,7 +93,7 @@ def add_feedback(feedback, nick, good):
         total+=1
         if line.startswith("+"):
             pro += 1
-        else if line.startswith("-"):
+        elif line.startswith("-"):
             con += 1
     f.close()
     if pro+con==total:
