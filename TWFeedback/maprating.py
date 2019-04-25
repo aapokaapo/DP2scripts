@@ -50,7 +50,9 @@ def add_feedback(feedback, nick, good):
         f=open(playersfilename, "r")
         for line in f:
             if line.startswith(mapname):
-                if line.replace(mapname+" ", "") == playerid:
+                line=line.replace(mapname+" ","")
+                line=line.split("\n")
+                if line[0] == playerid:
                     alreadyvoted=True
         f.close()
     
