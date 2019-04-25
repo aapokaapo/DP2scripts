@@ -99,7 +99,7 @@ def add_feedback(feedback, nick, good):
     percentage=0
     if not total=0:
         percentage=pro/total*100
-    else:
+    else: # test
         percentage=-1
     f=open(ratefilename, "r")
     for lines in f:
