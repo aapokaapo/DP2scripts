@@ -96,6 +96,7 @@ def add_feedback(feedback, nick, good):
         elif line.startswith("-"):
             con += 1
     f.close()
+    percentage=0
     if pro+con==total:
         percentage=pro/total*100
     f=open(ratefilename, "r")
