@@ -39,22 +39,25 @@ def add_feedback(feedback, nick, good):
     ### Define hostname specific file paths ###
     status = s.get_status()
     servername=status.get("hostname")
+    mapname=status.get("mapname")
     ratefilename = "/var/www/html/whoa.ga/maprating-"+servername+".txt"    
     playersfilename = "/var/www/html/whoa.ga/mapplayers-"+servername+".txt" 
     reasonfilename = "/var/www/html/whoa.ga/mapfeedback-"+servername+".txt"
     
-    ### Check if player already voted ###
-    f=open(playersfilename, "r")
+    ### Check if player already voted on that specific map ###
     alreadyvoted=false
-    for line in f:
-        if line == playerid:
-            alreadyvoted=true
-    f.close()
+    if path.isfile(playersfilename):
+        f=open(playersfilename, "r")
+        for line in f:
+            if line.startswith(mapname):
+                if line.replace(mapname+" ", "") == playerid:
+                    alreadyvoted=true
+        f.close()
     
-    ### If not, add player's ID to playersfilename and vote+reason to reasonfilename ###
+    ### If not, add player's ID to playersfilename and vote+reason to reasonfilename with the mapname ###
     if !alreadyvoted:
         f=open(playersfilename, "a")
-        f.write(playerid)
+        f.write(mapname+" "+playerid)
         f.close()
         if os.path.exists(reasonfilename):
             append_write = 'a' # append if already exists
@@ -62,24 +65,26 @@ def add_feedback(feedback, nick, good):
             append_write = 'w' # make a new file if not
         with open(reasonfilename ,append_write) as myfile:
             if(good):
-                myfile.write("+ "+nick+": "+feedback + "\n")
+                myfile.write(mapname+" "+"+ "+nick+": "+feedback + "\n")
             else:
-                myfile.write("- "+nick+": "+feedback + "\n")
+                myfile.write(mapname+" "+"- "+nick+": "+feedback + "\n")
     
-    ### If yes, replace player's previous vote+reason with his latest one ###
+    ### If yes, replace player's previous vote+reason with his latest one and mapname ###
     if alreadyvoted:
         f=open(reasonfilename, "r")
         for lines in f:
-            line = lines.replace("+ ","")
-            line = line.replace("- ","")
-            if line.startswith(nick):
-                if(good):
-                    replaceline("/var/www/html/whoa.ga/mapfeedback-"+servername, lines, "+ "+nick+": "+feedback + "\n")
-                else:
-                    replaceline("/var/www/html/whoa.ga/mapfeedback-"+servername, lines, "- "+nick+": "+feedback + "\n")
+            if lines.startswith(mapname):
+                line=lines.replace(mapname+" ","")
+                line = line.replace("+ ","")
+                line = line.replace("- ","")
+                if line.startswith(nick):
+                    if(good):
+                        replaceline("/var/www/html/whoa.ga/mapfeedback-"+servername, lines, mapname+" "+"+ "+nick+": "+feedback + "\n")
+                    else:
+                        replaceline("/var/www/html/whoa.ga/mapfeedback-"+servername, lines, mapname+" "+"- "+nick+": "+feedback + "\n")
         f.close()
         
-    ### Count + and - votes to calculate consensus percentage ###
+    ### Count + and - votes to calculate consensus percentage and add mapspecifically to maprate file ###
     f=open(reasonfilename, "r")
     pro=0
     con=0
@@ -92,8 +97,12 @@ def add_feedback(feedback, nick, good):
             con += 1
     f.close()
     if pro+con==total:
-        percentage=pro/total
-    s.say("{C}9***{C}CFeedback written to whoa.ga/mapfeedback-"+servername+".txt{C}9***")
+        percentage=pro/total*100
+    f=open(ratefilename, "r")
+    for lines in f:
+        if lines.startswith(mapname):
+            replaceline("/var/www/html/whoa.ga/maprating-"+servername, lines, mapname+" "+percentage)
+    s.say("{C}9***{C}CThank you for your vote, "+mapname+" now stands at "+percentage +"% !{C}9***")
    
 def replaceline(path, oldcontent, newcontent):
     copyfile(path+".txt", path+"tmp.txt")
