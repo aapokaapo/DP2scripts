@@ -104,17 +104,17 @@ def add_feedback(feedback, nick, good):
     else: # test2
         percentage=-1
     f=open(ratefilename, "r")
-    alreadyrated=false
+    alreadyrated=False
     for lines in f:
         if lines.startswith(mapname):
-            alreadyrated=true
-            replaceline("/var/www/html/whoa.ga/maprating-"+servername, lines, mapname+" "+percentage)
+            alreadyrated=True
+            replaceline("/var/www/html/whoa.ga/maprating-"+servername, lines, mapname+" "+str(round(percentage,4)))
     f.close()
     if not alreadyrated:
         f=open(ratefilename, "w")
-        f.write(mapname+" "+percentage)
+        f.write(mapname+" "+str(round(percentage,4)))
         f.close()
-    s.say("{C}9***{C}CThank you for your vote, "+mapname+" now stands at "+str(percentage) +"% !{C}9***")
+    s.say("{C}9***{C}CThank you for your vote, "+mapname+" now stands at "+str(round(percentage,4)) +"% !{C}9***")
    
 def replaceline(path, oldcontent, newcontent):
     copyfile(path+".txt", path+"tmp.txt")
