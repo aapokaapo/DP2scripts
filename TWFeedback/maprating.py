@@ -57,7 +57,7 @@ def add_feedback(feedback, nick, good):
     ### If not, add player's ID to playersfilename and vote+reason to reasonfilename with the mapname ###
     if not alreadyvoted:
         f=open(playersfilename, "a")
-        f.write(mapname+" "+playerid)
+        f.write(mapname+" "+playerid+"\n")
         f.close()
         if os.path.exists(reasonfilename):
             append_write = 'a' # append if already exists
