@@ -45,13 +45,13 @@ def add_feedback(feedback, nick, good):
     reasonfilename = "/var/www/html/whoa.ga/mapfeedback-"+servername+".txt"
     
     ### Check if player already voted on that specific map ###
-    alreadyvoted=false
+    alreadyvoted=False
     if os.path.exists(playersfilename):
         f=open(playersfilename, "r")
         for line in f:
             if line.startswith(mapname):
                 if line.replace(mapname+" ", "") == playerid:
-                    alreadyvoted=true
+                    alreadyvoted=True
         f.close()
     
     ### If not, add player's ID to playersfilename and vote+reason to reasonfilename with the mapname ###
@@ -120,9 +120,9 @@ def replaceline(path, oldcontent, newcontent):
 @s.event
 def on_chat(nick, message):
     if message.startswith('!badmap'):
-        add_feedback(message.replace("!badmap",""), nick, false)
+        add_feedback(message.replace("!badmap",""), nick, False)
     elif message.startswith('!goodmap'):
-        add_feedback(message.replace("!goodmap",""), nick, true)
+        add_feedback(message.replace("!goodmap",""), nick, True)
 
 def infomessage():
     s.say("{C}0***{C}EDo you like this map? type '!goodmap <reason>' if you do, or '!badmap <reason>' if you dont!{C}0***")  
