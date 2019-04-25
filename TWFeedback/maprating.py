@@ -46,7 +46,7 @@ def add_feedback(feedback, nick, good):
     
     ### Check if player already voted on that specific map ###
     alreadyvoted=false
-    if path.isfile(playersfilename):
+    if os.path.exists(playersfilename):
         f=open(playersfilename, "r")
         for line in f:
             if line.startswith(mapname):
