@@ -55,7 +55,7 @@ def add_feedback(feedback, nick, good):
         f.close()
     
     ### If not, add player's ID to playersfilename and vote+reason to reasonfilename with the mapname ###
-    if !alreadyvoted:
+    if not alreadyvoted:
         f=open(playersfilename, "a")
         f.write(mapname+" "+playerid)
         f.close()
