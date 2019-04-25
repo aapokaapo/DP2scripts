@@ -102,7 +102,7 @@ def add_feedback(feedback, nick, good):
     for lines in f:
         if lines.startswith(mapname):
             replaceline("/var/www/html/whoa.ga/maprating-"+servername, lines, mapname+" "+percentage)
-    s.say("{C}9***{C}CThank you for your vote, "+mapname+" now stands at "+percentage +"% !{C}9***")
+    s.say("{C}9***{C}CThank you for your vote, "+mapname+" now stands at "+str(percentage) +"% !{C}9***")
    
 def replaceline(path, oldcontent, newcontent):
     copyfile(path+".txt", path+"tmp.txt")
@@ -115,7 +115,7 @@ def replaceline(path, oldcontent, newcontent):
             else:
                 g.write(line)
     g.close()
-    remove(path+"tmp.txt")
+    os.remove(path+"tmp.txt")
 
 @s.event
 def on_chat(nick, message):
