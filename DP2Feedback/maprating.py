@@ -26,7 +26,14 @@ s = Server(hostname='127.0.0.1', port=22222,
            rcon_password='whoaisbest')
            
            
-def add_feedback(feedback, nick, good):
+def add_feedback(feedback, nick, good) -> None:
+    """
+    function description
+    :param feedback: param description
+    :param nick:
+    :param good:
+    :return: return rescription
+    """
     status = s.get_status()
     mapname=status.get("mapname")
     servername=status.get("hostname")
@@ -51,7 +58,7 @@ def add_feedback(feedback, nick, good):
 @s.event
 def on_chat(nick, message):
     if message.startswith('!badmap'):
-        add_feedback(message.replace("!badmap",""), nick, !good)
+        add_feedback(message.replace("!badmap",""), nick, not good)
     elif message.startswith('!goodmap'):
         add_feedback(message.replace("!goodmap",""), nick, good)
 

@@ -1,3 +1,5 @@
+from DP2RadarGen.Brush import Brush as Brush
+
 if __name__ == '__main__':
     path = "maps/construction_final.map"
     with open(path, 'r') as file:
@@ -32,7 +34,10 @@ if __name__ == '__main__':
         if not len(cleanBrush)==0:
             cleanBrushes.append(cleanBrush)
         cleanBrush = list()
+    brush_list = list()
     for brush in cleanBrushes:
+        brush_list.append(Brush(brush))
+    for brush in brush_list:
         print("-----")
-        for line in brush:
-            print(line)
+        for plane in brush.brush:
+            print(plane)
