@@ -22,7 +22,7 @@ import floodprotection as f
 import GSclient
 import crython
     
-print("ServerSide DP2stat running. Made by whoa (and Toolwut)\n------- Clan [s] making Digital Paintball2 great again!-------")
+print("ServerSide DP2stat running. Made by whoa (and Toolwut)\n------- making Digital Paintball2 great again! -------")
 
 main.leaderboard_load()
 
