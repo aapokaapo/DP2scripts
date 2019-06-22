@@ -294,7 +294,7 @@ def add_points():  # Checks if any team/player is holding the flag, if yes then 
                     s.say("{C}" + color + flag_holder + " {C}9has {C}H" + str(score[flag_holder]) + " {C}9points!")
                 else:
                     if not timer:
-                        s.say("{C}E" + flag_holder + "{C}9 has 25 points! " + flag_holder + " has won!")
+                        s.say("{C}"+ color + flag_holder + "{C}9 has 25 points! " + flag_holder + " has won!")
                         change_map()
                         timer = True
 
