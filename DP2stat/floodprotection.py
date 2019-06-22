@@ -19,7 +19,6 @@ def floodprotection_stats(nick):
             print("this should stop flooding")
             flooding = True
             return flooding
-            break
     if not player_found:
         on_timeout_stats.append(PlayerStats(the_player.nick, the_player.dplogin))
 
@@ -35,7 +34,6 @@ def floodprotection_top10(nick):
             print("this should stop flooding")
             flooding = True
             return flooding
-            break
     if not player_found:
         on_timeout_top10.append(PlayerStats(the_player.nick, the_player.dplogin))
 
