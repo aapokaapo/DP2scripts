@@ -1,6 +1,6 @@
 DP2stat beta 2 made by whoa
 
-source available at: https://github.com/aapokaapo/DP2stat
+source available at: https://github.com/aapokaapo/DP2scripts/DP2stat
 
  Copyright (C) 2019  Aapo Kinnunen
 

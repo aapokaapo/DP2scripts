@@ -49,6 +49,5 @@ def floodprotection_top10kd(nick):
             print("this should stop flooding")
             flooding = True
             return flooding
-            break
     if not player_found:
         on_timeout_top10kd.append(PlayerStats(the_player.nick, the_player.dplogin))
