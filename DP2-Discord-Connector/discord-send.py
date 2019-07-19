@@ -13,6 +13,7 @@ channel = ""
 
 @client.event
 async def on_message(message):
+
     if message.author == client.user:
         pass
     elif message.channel != client.get_channel(your_desired_channel_id):

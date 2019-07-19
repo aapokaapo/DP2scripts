@@ -54,4 +54,4 @@ if __name__ == '__main__':
     matches = get_matches(lines)
     # for match in matches:
     #     print(match.info["date"])
-    plotting.seconds_per_day(matches)
+    plotting.plot_hours_per_day(matches)

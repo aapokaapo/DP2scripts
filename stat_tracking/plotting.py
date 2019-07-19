@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def seconds_per_day(matches):
+def plot_hours_per_day(matches):
     time_total = 0
     time_per_day = list()
     current_time = 0
@@ -16,7 +16,7 @@ def seconds_per_day(matches):
     for match in matches:
         for player in match.players:
             if match.info["date"] == current_date:
-                current_time += player["time_on_team"]
+                current_time += player["time_on_team"]/60/60
             else:
                 time_per_day.append([current_date,current_time])
                 current_date = match.info["date"]
@@ -74,8 +74,8 @@ def seconds_per_day(matches):
 
     plt.bar(y_pos, performance, align='center', alpha=0.5)
     plt.xticks(y_pos, objects, rotation='vertical')
-    plt.ylabel('Seconds played')
-    plt.title('Seconds played per day')
+    plt.ylabel('Hours played')
+    plt.title('Hours played per day')
 
     plt.show()
 
