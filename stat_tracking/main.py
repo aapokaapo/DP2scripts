@@ -55,3 +55,4 @@ if __name__ == '__main__':
     # for match in matches:
     #     print(match.info["date"])
     plotting.plot_hours_per_day(matches)
+    # plotting.total_map_hours_per_day(matches)
