@@ -64,24 +64,24 @@ Thanks to:
 
 
 ###In-game commands and usage###
-Currently there are 5 in-game commands
+Currently there are 4 in-game commands
 
-	1."!addplayer"
-		-adds player to the DP2Leaderboard(TM)
-		-is bound to players Global Login id, so the player must be logged in
-		-if the player changes his nick, he has to add himself again to notify the script of name change
+	
+		
+		
+		
 
-	2."!stats"
+	."!stats"
 		-prints the stats of the user
 		-kills|deaths|captures|grabs|score|kills/deaths -ratio
 
-	3."!top10"
+	."!top10"
 		-prints the current top10 players
 
-	4."!top10kd"
+	."!top10kd"
 		-prints the current top10 base on k/d -ratio
 
-	5."!help"
+	."!help"
 		-print the commands and their meaning in-game
 
 The script saves the leaderboard automatically and loads it on start-up
