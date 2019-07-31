@@ -39,12 +39,12 @@ def add_feedback(feedback, nick, good):
     ### Define hostname specific file paths ###
     status = s.get_status()
     servername=status.get("hostname")
-    mapname=status.get("mapname")
+    mapname=status.get("map_name")
     ratefilename = "/var/www/html/whoa.ga/maprating-"+servername+".txt"    
     playersfilename = "/var/www/html/whoa.ga/mapplayers-"+servername+".txt" 
     reasonfilename = "/var/www/html/whoa.ga/mapfeedback-"+servername+".txt"
     
-    ### Check if player already voted on that specific map ###
+    ### Check if player already voted on that specific map_name ###
     alreadyvoted=False
     if os.path.exists(playersfilename):
         f=open(playersfilename, "r")
@@ -56,7 +56,7 @@ def add_feedback(feedback, nick, good):
                     alreadyvoted=True
         f.close()
     
-    ### If not, add player's ID to playersfilename and vote+reason to reasonfilename with the mapname ###
+    ### If not, add player's ID to playersfilename and vote+reason to reasonfilename with the map_name ###
     if not alreadyvoted:
         f=open(playersfilename, "a")
         f.write(mapname+" "+playerid+"\n")
@@ -71,7 +71,7 @@ def add_feedback(feedback, nick, good):
             else:
                 myfile.write(mapname+" "+"- "+nick+": "+feedback + "\n")
     
-    ### If yes, replace player's previous vote+reason with his latest one and mapname ###
+    ### If yes, replace player's previous vote+reason with his latest one and map_name ###
     if alreadyvoted:
         f=open(reasonfilename, "r")
         for lines in f:
@@ -137,7 +137,7 @@ def on_chat(nick, message):
         add_feedback(message.replace("!goodmap",""), nick, True)
 
 def infomessage():
-    s.say("{C}0***{C}EDo you like this map? type '!goodmap <reason>' if you do, or '!badmap <reason>' if you dont!{C}0***")  
+    s.say("{C}0***{C}EDo you like this map_name? type '!goodmap <reason>' if you do, or '!badmap <reason>' if you dont!{C}0***")
     t = threading.Timer(300.0, infomessage,())
     t.start()
 

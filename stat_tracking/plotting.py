@@ -16,10 +16,10 @@ def total_map_hours_per_day(matches):
     for match in matches:
         if match.info["date"] == current_date:
             # current_time += match.info["map_playtime"]/60/60
-            if match.info["map"] in current_time:
-                current_time[match.info["map"]] += match.info["map_playtime"]/60/60
+            if match.info["map_name"] in current_time:
+                current_time[match.info["map_name"]] += match.info["map_playtime"]/60/60
             else:
-                current_time[match.info["map"]] = match.info["map_playtime"] / 60 / 60
+                current_time[match.info["map_name"]] = match.info["map_playtime"] / 60 / 60
         else:
             if current_time:
                 time_per_day.append([current_date,current_time])

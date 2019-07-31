@@ -236,12 +236,12 @@ def get_maps():  # loads the maps from rotation file
                 maplist.append(mapname)
 
 
-def change_map():  # finds the current map from maplist and changes to the one after it
+def change_map():  # finds the current map_name from maplist and changes to the one after it
     get_maps()
     map_found = False
     status = s.get_status()
     for i in range(len(maplist)):
-        if maplist[i] == status.get("mapname"):
+        if maplist[i] == status.get("map_name"):
             map_found = True
             mapnumber = i + 1
             if maplist[mapnumber] == "###":
@@ -253,7 +253,7 @@ def change_map():  # finds the current map from maplist and changes to the one a
                 s.rcon("sv newmap " + maplist[mapnumber])
     if not map_found:
         mapnumber = 0
-        print("Current map not in rotation,\n Newmap:" + maplist[mapnumber])
+        print("Current map_name not in rotation,\n Newmap:" + maplist[mapnumber])
         s.rcon("sv newmap " + maplist[mapnumber])
     s.rcon("debug1 0")
 

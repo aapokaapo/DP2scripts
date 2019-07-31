@@ -1,7 +1,7 @@
 from DP2RadarGen.Brush import Brush as Brush
 
 if __name__ == '__main__':
-    path = "maps/construction_final.map"
+    path = "maps/construction_final.map_name"
     with open(path, 'r') as file:
         brushes = list()
         currentBrush = list()

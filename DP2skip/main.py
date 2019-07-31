@@ -74,7 +74,7 @@ def voting_system():
         get_maps()
         map_found = False
         for i in range(len(maplist)):
-            if maplist[i] == status.get("mapname"):
+            if maplist[i] == status.get("map_name"):
                 map_found = True
                 mapnumber = i + 1
                 if maplist[mapnumber] == "###":
@@ -83,7 +83,7 @@ def voting_system():
                 s.rcon("sv newmap " + maplist[mapnumber])
         if not map_found:
             mapnumber = 0
-            print("Current map not in rotation,\n Newmap:" + maplist[mapnumber])
+            print("Current map_name not in rotation,\n Newmap:" + maplist[mapnumber])
             s.rcon("sv newmap " + maplist[mapnumber])
         clear_lists()
     else:
@@ -120,7 +120,7 @@ def cls():
     print("Map rotation:")
     status = s.get_status()
     for mapname in maplist:
-        if mapname == status.get("mapname"):
+        if mapname == status.get("map_name"):
             mapname = mapname + " *"
         print(str(mapname))
     print("\n")

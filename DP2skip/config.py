@@ -6,7 +6,7 @@ s = Server(hostname='127.0.0.1', port=11111,
            logfile=r'/home/paintball/paintball2/pball/qconsole11111.log',
            rcon_password='whoaisbest')
 
-# Define the path to server map rotation
+# Define the path to server map_name rotation
 rotation = "/home/paintball/paintball2/pball/configs/rotation_test.txt"
 
 # Define the length of timeout, before a new vote can be called
@@ -18,10 +18,10 @@ timeout = 10
 # Use "{U}text{/U}" for underlined text
 
 # When first player says '!skip'
-# e.g "Vote to skip map requested! To vote yes type '!skip'"
-text1="{C}0***{C}DVote to skip map requested! To vote yes type {C}?'!skip'{C}0***"
+# e.g "Vote to skip map_name requested! To vote yes type '!skip'"
+text1="{C}0***{C}DVote to skip map_name requested! To vote yes type {C}?'!skip'{C}0***"
 
-# When map has just changed
+# When map_name has just changed
 # e.g "Wait few seconds before a new vote"
 text2="{C}0***{C}DWait few seconds before a new vote{C}0***"
 

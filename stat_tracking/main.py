@@ -17,7 +17,7 @@ def get_file_from_web(url):
 class game:
     def __init__(self, first_line):
         contents = first_line.split(" ")
-        self.info = {"map":contents[0], "map_playtime":int(contents[1]), "date": contents[2]}
+        self.info = {"map_name":contents[0], "map_playtime":int(contents[1]), "date": contents[2]}
         self.players = list()
 
     def add_player(self, player_line):

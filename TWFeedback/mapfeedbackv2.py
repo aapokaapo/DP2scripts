@@ -26,10 +26,10 @@ s = Server(hostname='127.0.0.1', port=11111,
            logfile=r'/home/paintball/paintball2/pball/qconsole11111.log',
            rcon_password='oAQrge5x')
            
-### Unchanged from mapfeedback.py - store feedback in map specific file with nick ###
+### Unchanged from mapfeedback.py - store feedback in map_name specific file with nick ###
 def add_feedback(feedback, nick):
     status = s.get_status()
-    mapname=status.get("mapname")
+    mapname=status.get("map_name")
     if mapname.startswith("beta"):
         mapname = mapname.replace("beta/", "")
     elif mapname.startswith("inprogress"):
@@ -46,7 +46,7 @@ def add_feedback(feedback, nick):
 
 def remove_feedback(linenumber, nick):
     status = s.get_status()
-    mapname=status.get("mapname")
+    mapname=status.get("map_name")
     try:
         linenumber=int(linenumber)
     except ValueError:
@@ -82,7 +82,7 @@ def remove_feedback(linenumber, nick):
 def set_mapper(mapper, nick):
     ### Get nick's ID and check if it's whoa or Toolwut ###
     status=s.get_status()
-    mapname=status.get("mapname")
+    mapname=status.get("map_name")
     try:
         mapperid=int(mapper)
     except ValueError:
@@ -107,7 +107,7 @@ def set_mapper(mapper, nick):
     else:
         s.say("youre no admin")
         return None
-    ### Check if map already has an admin set ###
+    ### Check if map_name already has an admin set ###
     mapperfile="/var/www/html/whoa.ga/mapperlist.txt"
     if not os.path.exists(mapperfile):
         s.say("No mapperfile specified")
@@ -161,7 +161,7 @@ def get_mapper(mapname):
     if not os.path.exists(mapperfile):
         s.say("No mapperfile specified")
         return 0
-    ### check if mapperfile lines consist of "<mapname> <mapper-ID>" and return mapper ID ###
+    ### check if mapperfile lines consist of "<map_name> <mapper-ID>" and return mapper ID ###
     else:
         f=open(mapperfile, "r")
         for line in f:
@@ -172,7 +172,7 @@ def get_mapper(mapname):
                 except ValueError:
                     print("Invalid mapperfile content: "+line)
                 return linenumber
-        s.say("No mapper for this map specified, please contact the admin (whoa or Toolwut)")
+        s.say("No mapper for this map_name specified, please contact the admin (whoa or Toolwut)")
         return 0
 
 ### Receive order to store feedback or to remove feedback ###

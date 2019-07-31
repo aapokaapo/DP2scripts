@@ -55,7 +55,7 @@ def get_help():
     s.say("{C}DType {C}?!stats {C}Dto see your current stats")
     s.say("{C}DType {C}?!top10 {C}Dto see current top10")
     s.say("{C}DType {C}?!top10kd {C}Dto see current top10 on K/D-ratio")
-    s.say("{C}DPlayer can use each command once/map!")
+    s.say("{C}DPlayer can use each command once/map_name!")
 
 def get_top10():
     player_list.sort(reverse=True, key=lambda player_stats: player_stats.kills-player_stats.deaths+3*player_stats.grabs+5*player_stats.caps)

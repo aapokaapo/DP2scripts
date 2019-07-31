@@ -28,7 +28,7 @@ s = Server(hostname='127.0.0.1', port=22222,
            
 def add_feedback(feedback, nick):
     status = s.get_status()
-    mapname=status.get("mapname")
+    mapname=status.get("map_name")
     if mapname.startswith("beta"):
         mapname = mapname.replace("beta/", "")
     elif mapname.startswith("inprogress"):
