@@ -22,7 +22,7 @@ def list_flags(map_path) -> None:
             tex = (bytes1[offset + 76 * i + 40:offset + 76 * i + 72])
             if not flags == 0 and not flags == 2147483648:  # not 0 or negative 0 (sign bit set to 1)
                 flag_list = list()
-                for l in range(10): # (probably) number of surface flags in the game
+                for l in range(32):  # size of surface flag part
                     if not flags&2 ** l == 0:  # flag 2**l is in flag sum
                         flag_list.append(2**l)
                     if 2**l > flags:  # cannot be in flag sum anyway
