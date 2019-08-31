@@ -28,93 +28,47 @@ def get_polys(path, pball_path):
             (vert_z,) = struct.unpack('<f', (bytes1[offset_verts + 12 * i + 8:offset_verts + 12 * i + 12]))
             vertices.append([vert_x, vert_y, vert_z])
             # print(f"{vert_x} - {vert_y} - {vert_z}")
-        print(len(vertices))
-        print()
-        print(length_verts)
 
         offset_edges = int.from_bytes(bytes1[96:100], byteorder='little', signed=False)
         length_edges = int.from_bytes(bytes1[100:104], byteorder='little', signed=False)
-        print(length_edges)
         edges = list()
-        max_index = 0
         for i in range(int(length_edges / 4)):  # texture information lump is 76 bytes large
-            # (vert_1,) = struct.unpack('<h', (bytes1[offset_edges + 20 * i + 8:offset_edges + 20 * i + 10]))
             vert_1 = int.from_bytes(bytes1[offset_edges + 4 * i + 0:offset_edges + 4 * i + 2], byteorder='little', signed=False)
             vert_2 = int.from_bytes(bytes1[offset_edges + 4 * i + 2:offset_edges + 4 * i + 4], byteorder='little', signed=False)
-            # (vert_2,) = struct.unpack('<h', (bytes1[offset_edges + 20 * i + 10:offset_edges + 20 * i + 12]))
-            if vert_1 > max_index:
-                max_index = vert_1
-            if vert_2 > max_index:
-                max_index = vert_2
-            # if not int(vert_1/2) == vert_1/4:
-            #     print("nub")
-            #     return
-            # try:
             edges.append([vertices[vert_1], vertices[vert_2]])
-            # except:
-            #     print(f"vert1: {vert_1} - vert2: {vert_2}")
-        print(f"max_index: {max_index} - number of vertices: {length_verts / 12} - num_vert_byte: {length_verts}")
-        # print(int(int.from_bytes(bytes1[104:108], byteorder='little', signed=False)/4))
-        # return
-        print(len(edges))
 
         offset_face_edges = int.from_bytes(bytes1[104:108], byteorder='little', signed=False)
         length_face_edges = int.from_bytes(bytes1[108:112], byteorder='little', signed=False)
         face_edges = list()
         for i in range(int(length_face_edges / 4)):  # texture information lump is 76 bytes large
-            # (vert_1,) = struct.unpack('<h', (bytes1[offset_edges + 20 * i + 8:offset_edges + 20 * i + 10]))
             edge_index = int.from_bytes(bytes1[offset_face_edges + 4 * i + 0:offset_face_edges + 4 * i + 4], byteorder='little', signed=True)
-            # print(edge_index)
             if edge_index > 0:
                 face_edges.append([edges[abs(edge_index)][0], edges[abs(edge_index)][1]])
             elif edge_index < 0:
                 face_edges.append([edges[abs(edge_index)][1], edges[abs(edge_index)][0]])
-        print(len(face_edges))
-        # print(face_edges)
-        print()
 
         offset_textures = int.from_bytes(bytes1[48:52], byteorder='little', signed=False)
         length_textures = int.from_bytes(bytes1[52:56], byteorder='little', signed=False)
-        print(len(bytes1))
         texture_list = list()
         for i in range(int(length_textures/76)):
-            # tex = (bytes1[offset_textures+76*i+40:offset_textures+76*i+72])
-            # tex = [x for x in tex if x]
-            # try:
-            # print(len(a))
-            # print(a)
-            # a.decode("ascii", "ignore")
-            # print(struct.pack("b" * len(a), *a).decode('ascii', "ignore"))
-
             tex = (bytes1[offset_textures+76*i+40:offset_textures+76*i+72])
             tex = [x for x in tex if x]
-            # print(tex)
             tex_name = struct.pack("b" * len(tex), *tex).decode('ascii', "ignore")
             print(tex_name)
             texture_list.append(tex_name)
-            # print(tex.decode("ascii", "ignore"))
-            # print(struct.pack("b" * len(a), *a).decode('ascii', "ignore"))
-            # bytes1[offset + 76 * i + 40:offset + 76 * i + 72] = bytes(tex_bytes)
-            # except:
-                # hg = 0
-
 
         faces = list()
-        max_face = 0
-        min_idx = int(length_face_edges / 4)
-        max_idx = 0
         tex_ids = list()
         texture_list_cleaned=list(dict.fromkeys(texture_list))
 
         average_colors=list()
         for texture in texture_list_cleaned:
-            color=(0,0,0)
+            color = (0, 0, 0)
             if os.path.isfile(pball_path+"/textures/"+texture+".png"):
                 img = Image.open((pball_path+"/textures/"+texture+".png"))
                 img2 = img.resize((1, 1))
 
                 color = img2.getpixel((0, 0))
-                # print(f"texture: {texture} - color: {color}")
 
             elif os.path.isfile(pball_path+"/textures/"+texture+".jpg"):
                 img = Image.open((pball_path+"/textures/"+texture+".jpg"))
@@ -139,30 +93,17 @@ def get_polys(path, pball_path):
                     conts = [c for b in conts for c in b]
                     conts.pop(len(conts)-1)
                     conts=list(map(int, conts))
-                    # print(conts)
-                    # print(len(conts))
-                    # print()
-                    # img = None
                     img3 = WalImageFile.open((pball_path+"/textures/"+texture+".wal"))
                     img3.putpalette(conts)
-                    # img3.convert("RGBA")
-                    img3.save("1.png")
                     img3=img3.convert("RGBA")
                     print(img3.mode)
-                    img3.save("2.png")
-                    img = Image.open("1.png")
-                    # plt.imshow(img)
-                    # plt.show()
-                    # img.load()
-                    # break
 
                     img2 = img3.resize((1, 1))
 
                     color = img2.getpixel((0, 0))
-            print(f"ltexture: {texture} - color: {color}")
-            color_rgb=color[:3]
+            print(f"texture: {texture} - color: {color}")
+            color_rgb = color[:3]
             average_colors.append(color_rgb)
-
 
         for i in range(int(length_faces / 20)):  # texture information lump is 76 bytes large
             # get sum of flags / transform flag bit field to uint32
@@ -174,46 +115,13 @@ def get_polys(path, pball_path):
             print(tex_ids[len(tex_ids)-1])
             first_edge = int.from_bytes(first_edge, byteorder='little', signed=True)
             next_edges = list()
-            # print(first_edge)
-            if first_edge+num_edges > max_face:
-                max_face = first_edge+num_edges
-            # fits = True
-            # print(first_edge)
-            # print(first_edge + num_edges)
             for j in range(num_edges):
-                # n = i+1
-                # if n > num_edges:
-                #     n=0
-                # print(face_edges[first_edge+i][0]== face_edges[first_edge+n][1])
-                # if not (face_edges[first_edge+i+1][1]== face_edges[first_edge+n+1][0]):
-                #     print("whoops")
-                # print()
-                # print(len(face_edges))
-                # print(first_edge+j)
-                if first_edge+j < min_idx:
-                    # print(first_edge+j)
-                    min_idx = first_edge+j
-                if first_edge+j > max_idx:
-                    # print(first_edge+j)
-                    max_idx = first_edge+j
                 if face_edges[first_edge+j][0] not in next_edges:
                     next_edges.append(face_edges[first_edge+j][0])
+
                 if face_edges[first_edge + j][1] not in next_edges:
                     next_edges.append(face_edges[first_edge + j][1])
             faces.append(next_edges)
-            # for face in face_edges:
-            #     fits = True
-            #     for idx, edge in enumerate(face):
-            #         n = idx + 1
-            #         if n >= len(face):
-            #             n = 0
-            #         if not (edge[0] == face[n][0]):
-            #             fits = False
-            #     # if fits:
-            #     print(face)
-        # print(f"min_idx: {min_idx} - max_idx: {max_idx} - length: {int(length_face_edges / 4)}, {len(face_edges)}")
-        # print(faces)
-        # print(texture_list)
 
         print(texture_list_cleaned)
         print(tex_ids)
@@ -224,6 +132,7 @@ def get_polys(path, pball_path):
         min_z = min([p for i in [[vertex[2] for vertex in edge] for edge in faces] for p in i])
 
         return [[[round(vertex[0]-min_x), round(vertex[1]-min_y), round(vertex[2]-min_z)] for vertex in edge] for edge in faces], tex_ids, average_colors
+
 
 def sort_by_z(faces):
     order = [mean(b) for b in [[c[2] for c in b] for b in faces]]
@@ -369,7 +278,7 @@ if __name__ == '__main__':
     # plt.show()
 
     path_to_pball = "/home/lennart/paintball2/Paintball2-wine/pball"
-    map_path = "/maps/siegecastle.bsp"
+    map_path = "/maps/carpathian.bsp"
     # print(map_path.replace(".bsp", "").split("/")[len(map_path.split("/"))-1])
     fig_solid.suptitle(map_path.replace(".bsp", "").split("/")[len(map_path.split("/"))-1]+ " solid")
     fig_wireframe.suptitle(map_path.replace(".bsp", "").split("/")[len(map_path.split("/"))-1]+ " wireframe")
