@@ -44,7 +44,7 @@ def load_names():
 
 load_names()
 
-print("whoa's bot script running! version 0.2\nPress Ctrl+C to stop")
+print("whoa's bot script running! map_version 0.2\nPress Ctrl+C to stop")
 
 
 def get_teams():

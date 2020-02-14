@@ -3,7 +3,7 @@ import os
 import struct
 import PIL.ImageOps
 import math
-import numpy as np
+# import numpy as np
 
 def make_gs_lightmaps(pball_path, map_path, prefix_map):
     with open(pball_path+map_path, "rb") as f:  # bsps are binary files
@@ -460,7 +460,7 @@ def change_texture_paths(map_path, tex_path) -> None:
             # except:
                 # hg = 0
         # 60- 72
-        with open("/home/lennart/paintball2/Paintball2-wine/pball/maps/light_wipa.bsp", "w+b") as g:  # bsps are binary files
+        with open("/home/lennart/paintball2/Paintball2-wine/pball/maps/wipa22.bsp", "w+b") as g:  # bsps are binary files
             g.write(bytes1)
         print(length)
         read_textures("/home/lennart/paintball2/Paintball2-wine/pball/maps/light_wipa.bsp", tex_path)
