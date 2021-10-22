@@ -6,7 +6,7 @@ from time import sleep
 # ***config***
 
 s = Server(hostname='127.0.0.1', port=27911,
-           logfile=r'/home/aapo/paintball2/pball/qconsole27911.log',
+           logfile=r'/home/user/paintball2/pball/qconsole27911.log',
            rcon_password='hackme')
 
 # you can add silly names for the bots here
