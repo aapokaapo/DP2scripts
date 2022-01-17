@@ -1,13 +1,14 @@
 from dplib.server import Server
 import random
 from time import sleep
+from config import rcon_password
 
 
 # ***config***
 
 s = Server(hostname='127.0.0.1', port=27911,
            logfile=r'/home/aapo/paintball2/pball/qconsole27911.log',
-           rcon_password='hackme')
+           rcon_password=rcon_password)
 
 # you can add silly names for the bots here
 # separate names with comma ","
@@ -16,6 +17,9 @@ name_list = ['Colton']
 
 # how many bots to add when player joins
 bot_count = 10
+
+# max clients
+maxclients = int(s.get_cvar("maxclients"))
 
 # ***config ends***
 
@@ -72,16 +76,17 @@ def forcejoin_player(player):
         active_players.append(player)
 
 
-def add_bots():
+def add_bots(bots):
     """
     Adds i amount of bots
 
     :return:
     """
     i = 0
+    new_bots = (len(active_players) * bot_count) - bots
     teams = get_teams()
-    print(str(bot_count) + " bots will be added on team " + teams[0])
-    for i in range(bot_count):
+    print(str(new_bots) + " bots will be added on team " + teams[0])
+    for i in range(new_bots):
         bot_name = random.choice(name_list) + "_bot"
         s.rcon("sv addbot " + bot_name)
         i += 1
@@ -93,13 +98,14 @@ def add_bots():
     print("bots added")
 
 
-def remove_bots():
+def remove_bots(bots):
     """
     Removes i amount of bots. I noticed that having a slight delay between 'disconnects' doesn't make
     the disconnect sound go BOOOOOM
 
     :return:
     """
+
     print("Removing " + str(bot_count) + " bots")
     players = s.get_players()
     i = 0
@@ -119,6 +125,28 @@ def remove_bots_all():
     """
     print("Removing all bots")
     s.rcon("sv removebot all")
+
+
+def count_players(players):
+    """
+    Count the bots currently on server and count the active players currently on server.
+    Add/remove bots if necessary.
+
+    :param players:
+    :return:
+    """
+    bots = 0
+    for bot in players:
+        if bot.dplogin == "bot":
+            bots += 1
+
+    print("bot count: " + str(bots))
+    print("active players: " + str(len(active_players)))
+
+    if bots > (len(active_players) * bot_count):
+        remove_bots(bots)
+    elif bots < (len(active_players) * bot_count):
+        add_bots(bots)
 
 
 @s.event
@@ -144,7 +172,7 @@ def on_team_switched(nick, old_team, new_team):
                 if new_player in active_players:
                     print(nick + " joined observer")
                     active_players.remove(new_player)
-                    remove_bots()
+                    count_players(players)
                     player_found = True
                 if not player_found:
                     print(nick + " joined the game")
@@ -153,7 +181,7 @@ def on_team_switched(nick, old_team, new_team):
                 print(nick + " came back from observer")
                 forcejoin_player(new_player)
                 print(nick + " joined team " + teams[1])
-                add_bots()
+                count_players(players)
             if new_team.lower() == bot_team:
                 print(nick + " tried to join the bot team " + teams[0] +
                       ", forcejoin him to the human team " + teams[1])
@@ -168,11 +196,12 @@ def on_disconnect(nick):
     :param nick:
     :return:
     """
+    players = s.get_players()
     print(nick + " disconnected")
     for player in active_players:
         if player.nick == nick:
             active_players.remove(player)
-            remove_bots()
+            count_players(players)
 
 
 @s.event
